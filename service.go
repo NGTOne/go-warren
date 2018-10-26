@@ -90,5 +90,14 @@ func (con *Consumer) processMsg(msg Message) {
 		async.Process(msg)
 	} else if sync, ok := con.syncActions[action]; ok {
 		sync.Process(msg)
+	} else {
+		con.processErrHandler.ProcessError(
+			msg,
+			errors.New(strings.Join([]string{
+				"Unknown action",
+				action,
+			}, " ")),
+		)
+		return
 	}
 }
