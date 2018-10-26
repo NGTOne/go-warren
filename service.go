@@ -10,6 +10,9 @@ type Consumer struct {
 	actionHeader string
 	syncActions map[string]SynchronousAction
 	asyncActions map[string]AsynchronousAction
+
+	processErrHandler ErrorHandler
+	replyErrHandler ErrorHandler
 }
 
 func NewConsumer(conn Connection) *Consumer {
@@ -66,4 +69,20 @@ func (con *Consumer) AddSyncAction(
 
 	con.syncActions[name] = action
 	return nil
+}
+
+func (con *Consumer) Listen() {
+	con.conn.SetNewMessageCallback(func (msg Message) {
+		con.processMsg(msg)
+	})
+
+	con.conn.Listen()
+}
+
+func (con *Consumer) processMsg(msg Message) {
+	action, err := msg.GetHeaderValue(con.actionHeader)
+
+	if (err != nil) {
+		con.processErrHandler.ProcessError(msg, err)
+	}
 }
