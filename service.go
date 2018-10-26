@@ -85,4 +85,10 @@ func (con *Consumer) processMsg(msg Message) {
 	if (err != nil) {
 		con.processErrHandler.ProcessError(msg, err)
 	}
+
+	if async, ok := con.asyncActions[action]; ok {
+		async.Process(msg)
+	} else if sync, ok := con.syncActions[action]; ok {
+		sync.Process(msg)
+	}
 }
