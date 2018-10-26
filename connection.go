@@ -1,7 +1,7 @@
 package warren
 
 type Message interface {
-	GetHeaderValue(headerName string) string
+	GetHeaderValue(headerName string) (string, error)
 	GetBody() []byte
 }
 
