@@ -8,6 +8,6 @@ type Message interface {
 type Connection interface {
 	Listen()
 	SetNewMessageCallback(f func(Message))
-	AcknowledgeMessage(m Message)
-	SendResponse(original Message, response Message)
+	AcknowledgeMessage(m Message) error
+	SendResponse(original Message, response Message) error
 }
