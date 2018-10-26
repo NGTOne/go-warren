@@ -1,9 +1,9 @@
 package warren
 
 type SynchronousAction interface {
-	Process(msg Message) Message
+	Process(msg Message) (Message, error)
 }
 
 type AsynchronousAction interface {
-	Process(msg Message)
+	Process(msg Message) error
 }
