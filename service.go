@@ -18,12 +18,12 @@ func NewConsumer(conn Connection) *Consumer {
 	}
 }
 
-func (conn *Consumer) SetActionHeader (header string) {
-	conn.actionHeader = header
+func (con *Consumer) SetActionHeader (header string) {
+	con.actionHeader = header
 }
 
-func (conn *Consumer) actionAlreadyExists (name string) error {
-	if _, alreadyPresent := conn.asyncActions[name]; alreadyPresent {
+func (con *Consumer) actionAlreadyExists (name string) error {
+	if _, alreadyPresent := con.asyncActions[name]; alreadyPresent {
 		return errors.New(strings.Join([]string{
 			"Action",
 			name,
@@ -31,7 +31,7 @@ func (conn *Consumer) actionAlreadyExists (name string) error {
 		}, " "))
 	}
 
-	if _, alreadyPresent := conn.syncActions[name]; alreadyPresent {
+	if _, alreadyPresent := con.syncActions[name]; alreadyPresent {
 		return errors.New(strings.Join([]string{
 			"Action",
 			name,
@@ -42,28 +42,28 @@ func (conn *Consumer) actionAlreadyExists (name string) error {
 	return nil
 }
 
-func (conn *Consumer) AddAsyncAction(
+func (con *Consumer) AddAsyncAction(
 	action AsynchronousAction,
 	name string,
 ) error {
-	err := conn.actionAlreadyExists(name)
+	err := con.actionAlreadyExists(name)
 	if (err != nil) {
 		return err
 	}
 
-	conn.asyncActions[name] = action
+	con.asyncActions[name] = action
 	return nil
 }
 
-func (conn *Consumer) AddSyncAction(
+func (con *Consumer) AddSyncAction(
 	action SynchronousAction,
 	name string,
 ) error {
-	err := conn.actionAlreadyExists(name)
+	err := con.actionAlreadyExists(name)
 	if (err != nil) {
 		return err
 	}
 
-	conn.syncActions[name] = action
+	con.syncActions[name] = action
 	return nil
 }
