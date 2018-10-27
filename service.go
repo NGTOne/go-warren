@@ -79,11 +79,20 @@ func (con *Consumer) Listen() {
 	con.conn.Listen()
 }
 
+func (con *Consumer) cleanUpAfterError(msg Message) {
+	// Not much point in checking the error here; if we fail to ack
+	// the message we're kinda screwed anyways
+	con.conn.AcknowledgeMessage(msg)
+}
+
 func (con *Consumer) processMsg(msg Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if (err != nil) {
 		con.processErrHandler.ProcessError(msg, err)
+		con.cleanUpAfterError(msg)
+		// If we don't know what action to take, we're done here
+		return
 	}
 
 	if async, ok := con.asyncActions[action]; ok {
