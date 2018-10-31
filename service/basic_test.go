@@ -66,3 +66,18 @@ func TestMissingActionHeader(t *testing.T) {
 	con := service.NewConsumer(mockConn)
 	con.Listen()
 }
+
+func TestMissingAction(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
+
+	mockMsg.EXPECT().GetHeaderValue("action").Return("foo", nil)
+
+	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+
+	con := service.NewConsumer(mockConn)
+	con.Listen()
+}
