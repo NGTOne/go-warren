@@ -46,13 +46,13 @@ func (mr *MockConnectionMockRecorder) AckMsg(arg0 interface{}) *gomock.Call {
 }
 
 // Listen mocks base method
-func (m *MockConnection) Listen() {
-	m.ctrl.Call(m, "Listen")
+func (m *MockConnection) Listen(arg0 func(conn.Message)) {
+	m.ctrl.Call(m, "Listen", arg0)
 }
 
 // Listen indicates an expected call of Listen
-func (mr *MockConnectionMockRecorder) Listen() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Listen", reflect.TypeOf((*MockConnection)(nil).Listen))
+func (mr *MockConnectionMockRecorder) Listen(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Listen", reflect.TypeOf((*MockConnection)(nil).Listen), arg0)
 }
 
 // NackMsg mocks base method
@@ -77,14 +77,4 @@ func (m *MockConnection) SendResponse(arg0, arg1 conn.Message) error {
 // SendResponse indicates an expected call of SendResponse
 func (mr *MockConnectionMockRecorder) SendResponse(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendResponse", reflect.TypeOf((*MockConnection)(nil).SendResponse), arg0, arg1)
-}
-
-// SetNewMsgCallback mocks base method
-func (m *MockConnection) SetNewMsgCallback(arg0 func(conn.Message)) {
-	m.ctrl.Call(m, "SetNewMsgCallback", arg0)
-}
-
-// SetNewMsgCallback indicates an expected call of SetNewMsgCallback
-func (mr *MockConnectionMockRecorder) SetNewMsgCallback(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetNewMsgCallback", reflect.TypeOf((*MockConnection)(nil).SetNewMsgCallback), arg0)
 }

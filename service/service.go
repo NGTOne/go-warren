@@ -91,11 +91,9 @@ func (con *consumer) AddSyncAction(
 }
 
 func (con *consumer) Listen() {
-	con.conn.SetNewMsgCallback(func (msg conn.Message) {
+	con.conn.Listen(func (msg conn.Message) {
 		con.processMsg(msg)
 	})
-
-	con.conn.Listen()
 }
 
 func (con *consumer) processMsg(msg conn.Message) {

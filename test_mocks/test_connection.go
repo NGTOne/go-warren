@@ -54,8 +54,8 @@ func (mr *TestConnectionMockRecorder) AckMsg(arg0 interface{}) *gomock.Call {
 }
 
 // Listen mocks base method
-func (m *TestConnection) Listen() {
-	m.callback(m.msg)
+func (m *TestConnection) Listen(f func (msg conn.Message)) {
+	f(m.msg)
 }
 
 // NackMsg mocks base method
