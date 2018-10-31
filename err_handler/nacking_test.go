@@ -22,7 +22,7 @@ func TestNackingHandler(t *testing.T) {
 	err := errors.New("Something went wrong!")
 
 	handler := err_handler.NewNackingHandler(mockConn)
-	result := handler.ProcessError(mockMsg, err)
+	result := handler.ProcessErr(mockMsg, err)
 
 	assert.Equal(t, err, result)
 }

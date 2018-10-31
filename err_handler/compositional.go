@@ -14,12 +14,12 @@ func NewCompositionalHandler(handlers []ErrHandler) CompositionalHandler {
 	}
 }
 
-func (handler CompositionalHandler) ProcessError (
+func (handler CompositionalHandler) ProcessErr (
 	msg conn.Message,
 	e error,
 ) error {
 	for _, handler := range handler.handlers{
-		e = handler.ProcessError(msg, e)
+		e = handler.ProcessErr(msg, e)
 	}
 
 	return e

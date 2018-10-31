@@ -43,7 +43,7 @@ func TestDifferentProcessHandler(t *testing.T) {
 	mockAction.EXPECT().Process(mockMsg).Return(err)
 
 	mockHandler := test_mocks.NewMockErrHandler(mockCtrl)
-	mockHandler.EXPECT().ProcessError(mockMsg, err).Return(err)
+	mockHandler.EXPECT().ProcessErr(mockMsg, err).Return(err)
 
 	con := service.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")
@@ -66,7 +66,7 @@ func TestDifferentReplyHandler(t *testing.T) {
 	mockAction.EXPECT().Process(mockMsg).Return(mockMsg, nil)
 
 	mockHandler := test_mocks.NewMockErrHandler(mockCtrl)
-	mockHandler.EXPECT().ProcessError(mockMsg, err).Return(err)
+	mockHandler.EXPECT().ProcessErr(mockMsg, err).Return(err)
 
 	mockConn.EXPECT().SendResponse(mockMsg, mockMsg).Return(err)
 

@@ -33,14 +33,14 @@ func (m *MockErrHandler) EXPECT() *MockErrHandlerMockRecorder {
 	return m.recorder
 }
 
-// ProcessError mocks base method
-func (m *MockErrHandler) ProcessError(arg0 conn.Message, arg1 error) error {
-	ret := m.ctrl.Call(m, "ProcessError", arg0, arg1)
+// ProcessErr mocks base method
+func (m *MockErrHandler) ProcessErr(arg0 conn.Message, arg1 error) error {
+	ret := m.ctrl.Call(m, "ProcessErr", arg0, arg1)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// ProcessError indicates an expected call of ProcessError
-func (mr *MockErrHandlerMockRecorder) ProcessError(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProcessError", reflect.TypeOf((*MockErrHandler)(nil).ProcessError), arg0, arg1)
+// ProcessErr indicates an expected call of ProcessErr
+func (mr *MockErrHandlerMockRecorder) ProcessErr(arg0, arg1 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ProcessErr", reflect.TypeOf((*MockErrHandler)(nil).ProcessErr), arg0, arg1)
 }

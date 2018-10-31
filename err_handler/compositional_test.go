@@ -31,7 +31,7 @@ func TestCompositionalHandler(t *testing.T) {
 		},
 	)
 
-	result := handler.ProcessError(mockMsg, err)
+	result := handler.ProcessErr(mockMsg, err)
 
 	assert.Equal(t, err, result)
 }

@@ -8,7 +8,7 @@ type PanickingHandler struct {
 	Message string
 }
 
-func (handler PanickingHandler) ProcessError (
+func (handler PanickingHandler) ProcessErr (
 	msg conn.Message,
 	e error,
 ) error {

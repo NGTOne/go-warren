@@ -5,5 +5,5 @@ import(
 )
 
 type ErrHandler interface {
-	ProcessError(msg conn.Message, e error) error
+	ProcessErr(msg conn.Message, e error) error
 }

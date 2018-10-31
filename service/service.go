@@ -102,7 +102,7 @@ func (con *consumer) processMsg(msg conn.Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if (err != nil) {
-		err = con.processErrHandler.ProcessError(msg, err)
+		err = con.processErrHandler.ProcessErr(msg, err)
 		// If we don't know what action to take, we're done here
 		if (err != nil) {
 			return
@@ -115,7 +115,7 @@ func (con *consumer) processMsg(msg conn.Message) {
 	} else if sync, ok := con.syncActions[action]; ok {
 		result, err = sync.Process(msg)
 	} else {
-		err = con.processErrHandler.ProcessError(
+		err = con.processErrHandler.ProcessErr(
 			msg,
 			errors.New(strings.Join([]string{
 				"Unknown action",
@@ -128,7 +128,7 @@ func (con *consumer) processMsg(msg conn.Message) {
 	}
 
 	if (err != nil) {
-		err = con.processErrHandler.ProcessError(msg, err)
+		err = con.processErrHandler.ProcessErr(msg, err)
 		if (err != nil) {
 			return
 		}
@@ -138,7 +138,7 @@ func (con *consumer) processMsg(msg conn.Message) {
 		err = con.conn.SendResponse(msg, result)
 
 		if (err != nil) {
-			err = con.replyErrHandler.ProcessError(msg, err)
+			err = con.replyErrHandler.ProcessErr(msg, err)
 			if (err != nil) {
 				return
 			}
@@ -147,7 +147,7 @@ func (con *consumer) processMsg(msg conn.Message) {
 
 	err = con.conn.AckMessage(msg)
 	if (err != nil) {
-		err = con.replyErrHandler.ProcessError(msg, err)
+		err = con.replyErrHandler.ProcessErr(msg, err)
 		if (err != nil) {
 			return
 		}
