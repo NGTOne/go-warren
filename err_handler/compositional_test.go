@@ -23,7 +23,7 @@ func TestCompositionalHandler(t *testing.T) {
 	err := errors.New("Something went wrong!")
 
 	handler := err_handler.NewCompositionalHandler(
-		[]err_handler.ErrorHandler{
+		[]err_handler.ErrHandler{
 			// Obviously this setup is ridiculous in practice, but
 			// we just need two error handlers here to test things
 			err_handler.NewAckingHandler(mockConn),

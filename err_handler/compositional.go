@@ -5,10 +5,10 @@ import(
 )
 
 type CompositionalHandler struct {
-	handlers []ErrorHandler
+	handlers []ErrHandler
 }
 
-func NewCompositionalHandler(handlers []ErrorHandler) CompositionalHandler {
+func NewCompositionalHandler(handlers []ErrHandler) CompositionalHandler {
 	return CompositionalHandler{
 		handlers: handlers,
 	}
