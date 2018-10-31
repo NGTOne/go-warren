@@ -109,10 +109,7 @@ func (con *Consumer) processMsg(msg Message) {
 	}
 
 	if (err != nil) {
-		err = con.processErrHandler.ProcessError(
-			msg,
-			err,
-		)
+		err = con.processErrHandler.ProcessError(msg, err)
 		if (err != nil) {
 			return
 		}
@@ -120,5 +117,12 @@ func (con *Consumer) processMsg(msg Message) {
 
 	if (result != nil) {
 		err = con.conn.SendResponse(msg, result)
+
+		if (err != nil) {
+			err = con.replyErrHandler.ProcessError(msg, err)
+			if (err != nil) {
+				return
+			}
+		}
 	}
 }
