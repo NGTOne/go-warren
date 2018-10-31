@@ -4,11 +4,11 @@ import(
 	"github.com/NGTOne/warren/conn"
 )
 
-type PanickingErrorHandler struct {
+type PanickingHandler struct {
 	Message string
 }
 
-func (handler PanickingErrorHandler) ProcessError (
+func (handler PanickingHandler) ProcessError (
 	msg conn.Message,
 	e error,
 ) error {

@@ -16,7 +16,7 @@ func TestPanickingHandler(t *testing.T) {
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 
 	err := errors.New("Something went wrong!")
-	handler := err_handler.PanickingErrorHandler{}
+	handler := err_handler.PanickingHandler{}
 
 	assert.Panics(t, func() {handler.ProcessError(mockMsg, err)})
 }

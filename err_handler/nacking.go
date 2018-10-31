@@ -4,17 +4,17 @@ import(
     "github.com/NGTOne/warren/conn"
 )
 
-type NackingErrorHandler struct {
+type NackingHandler struct {
 	conn conn.Connection
 }
 
-func NewNackingHandler(conn conn.Connection) NackingErrorHandler {
-	return NackingErrorHandler{
+func NewNackingHandler(conn conn.Connection) NackingHandler {
+	return NackingHandler{
 		conn: conn,
 	}
 }
 
-func (handler NackingErrorHandler) ProcessError (
+func (handler NackingHandler) ProcessError (
 	msg conn.Message,
 	e error,
 ) error {
