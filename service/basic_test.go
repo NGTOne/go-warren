@@ -6,6 +6,7 @@ import(
 
 	"testing"
 	"github.com/golang/mock/gomock"
+	"errors"
 )
 
 func TestSuccessfulAsync(t *testing.T) {
@@ -45,5 +46,23 @@ func TestSuccessfulSync(t *testing.T) {
 	con := service.NewConsumer(mockConn)
 	con.AddSyncAction(mockAction, "foo")
 
+	con.Listen()
+}
+
+func TestMissingActionHeader(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
+
+	mockMsg.EXPECT().GetHeaderValue("action").Return(
+		"",
+		errors.New("Something went wrong!"),
+	)
+
+	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+
+	con := service.NewConsumer(mockConn)
 	con.Listen()
 }
