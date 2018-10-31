@@ -1,5 +1,5 @@
 package warren
 
 type ErrorHandler interface {
-	ProcessError(msg Message, e error)
+	ProcessError(msg Message, e error) error
 }

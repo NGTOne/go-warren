@@ -89,10 +89,12 @@ func (con *Consumer) processMsg(msg Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if (err != nil) {
-		con.processErrHandler.ProcessError(msg, err)
+		err = con.processErrHandler.ProcessError(msg, err)
 		con.cleanUpAfterError(msg)
 		// If we don't know what action to take, we're done here
-		return
+		if (err != nil) {
+			return
+		}
 	}
 
 	var result Message
@@ -101,7 +103,7 @@ func (con *Consumer) processMsg(msg Message) {
 	} else if sync, ok := con.syncActions[action]; ok {
 		result, err = sync.Process(msg)
 	} else {
-		con.processErrHandler.ProcessError(
+		err = con.processErrHandler.ProcessError(
 			msg,
 			errors.New(strings.Join([]string{
 				"Unknown action",
@@ -109,16 +111,20 @@ func (con *Consumer) processMsg(msg Message) {
 			}, " ")),
 		)
 		con.cleanUpAfterError(msg)
-		return
+		if (err != nil) {
+			return
+		}
 	}
 
 	if (err != nil) {
-		con.processErrHandler.ProcessError(
+		err = con.processErrHandler.ProcessError(
 			msg,
 			err,
 		)
 		con.cleanUpAfterError(msg)
-		return
+		if (err != nil) {
+			return
+		}
 	}
 
 	if (result != nil) {
