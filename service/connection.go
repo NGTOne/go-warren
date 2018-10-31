@@ -1,4 +1,4 @@
-package warren
+package service
 
 type Message interface {
 	GetHeaderValue(headerName string) (string, error)

@@ -1,4 +1,4 @@
-package warren
+package service
 
 type SynchronousAction interface {
 	Process(msg Message) (Message, error)
