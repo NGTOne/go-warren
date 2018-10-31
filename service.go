@@ -125,4 +125,12 @@ func (con *Consumer) processMsg(msg Message) {
 			}
 		}
 	}
+
+	err = con.conn.AckMessage(msg)
+	if (err != nil) {
+		err = con.replyErrHandler.ProcessError(msg, err)
+		if (err != nil) {
+			return
+		}
+	}
 }
