@@ -32,6 +32,14 @@ func (con *consumer) SetActionHeader (header string) {
 	con.actionHeader = header
 }
 
+func (con *consumer) SetProcessErrorHandler(handler ErrorHandler) {
+	con.processErrHandler = handler
+}
+
+func (con *consumer) SetReplyErrorHandler(handler ErrorHandler) {
+	con.replyErrHandler = handler
+}
+
 func (con *consumer) actionAlreadyExists (name string) error {
 	if _, alreadyPresent := con.asyncActions[name]; alreadyPresent {
 		return errors.New(strings.Join([]string{
