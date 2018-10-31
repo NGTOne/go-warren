@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"strings"
+	"github.com/NGTOne/warren/err_handler"
 	"github.com/NGTOne/warren/conn"
 )
 
@@ -19,6 +20,9 @@ type Consumer struct {
 func NewConsumer(conn conn.Connection) *Consumer {
 	return &Consumer{
 		conn: conn,
+		actionHeader: "action",
+		processErrHandler: err_handler.NewAckingHandler(conn),
+		replyErrHandler: err_handler.NewAckingHandler(conn),
 	}
 }
 
