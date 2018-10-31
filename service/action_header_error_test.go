@@ -22,7 +22,7 @@ func TestMissingActionHeader(t *testing.T) {
 		errors.New("Something went wrong!"),
 	)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.Listen()
@@ -37,7 +37,7 @@ func TestMissingAction(t *testing.T) {
 
 	mockMsg.EXPECT().GetHeaderValue("action").Return("foo", nil)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.Listen()

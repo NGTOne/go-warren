@@ -91,7 +91,7 @@ func (con *consumer) AddSyncAction(
 }
 
 func (con *consumer) Listen() {
-	con.conn.SetNewMessageCallback(func (msg conn.Message) {
+	con.conn.SetNewMsgCallback(func (msg conn.Message) {
 		con.processMsg(msg)
 	})
 
@@ -145,7 +145,7 @@ func (con *consumer) processMsg(msg conn.Message) {
 		}
 	}
 
-	err = con.conn.AckMessage(msg)
+	err = con.conn.AckMsg(msg)
 	if (err != nil) {
 		err = con.replyErrHandler.ProcessErr(msg, err)
 		if (err != nil) {

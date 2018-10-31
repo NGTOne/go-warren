@@ -32,7 +32,7 @@ func NewTestConnection(
 	return mock
 }
 
-func (m *TestConnection) SetNewMessageCallback(f func(conn.Message)) {
+func (m *TestConnection) SetNewMsgCallback(f func(conn.Message)) {
 	m.callback = f
 }
 
@@ -41,16 +41,16 @@ func (m *TestConnection) EXPECT() *TestConnectionMockRecorder {
 	return m.recorder
 }
 
-// AckMessage mocks base method
-func (m *TestConnection) AckMessage(arg0 conn.Message) error {
-	ret := m.ctrl.Call(m, "AckMessage", arg0)
+// AckMsg mocks base method
+func (m *TestConnection) AckMsg(arg0 conn.Message) error {
+	ret := m.ctrl.Call(m, "AckMsg", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// AckMessage indicates an expected call of AckMessage
-func (mr *TestConnectionMockRecorder) AckMessage(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AckMessage", reflect.TypeOf((*TestConnection)(nil).AckMessage), arg0)
+// AckMsg indicates an expected call of AckMsg
+func (mr *TestConnectionMockRecorder) AckMsg(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AckMsg", reflect.TypeOf((*TestConnection)(nil).AckMsg), arg0)
 }
 
 // Listen mocks base method
@@ -58,16 +58,16 @@ func (m *TestConnection) Listen() {
 	m.callback(m.msg)
 }
 
-// NackMessage mocks base method
-func (m *TestConnection) NackMessage(arg0 conn.Message) error {
-	ret := m.ctrl.Call(m, "NackMessage", arg0)
+// NackMsg mocks base method
+func (m *TestConnection) NackMsg(arg0 conn.Message) error {
+	ret := m.ctrl.Call(m, "NackMsg", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// NackMessage indicates an expected call of NackMessage
-func (mr *TestConnectionMockRecorder) NackMessage(arg0 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NackMessage", reflect.TypeOf((*TestConnection)(nil).NackMessage), arg0)
+// NackMsg indicates an expected call of NackMsg
+func (mr *TestConnectionMockRecorder) NackMsg(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NackMsg", reflect.TypeOf((*TestConnection)(nil).NackMsg), arg0)
 }
 
 // SendResponse mocks base method

@@ -20,7 +20,7 @@ func TestDifferentActionHeader(t *testing.T) {
 	mockMsg.EXPECT().GetHeaderValue("foobar").Return("foo", nil)
 	mockAction.EXPECT().Process(mockMsg).Return(nil)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")

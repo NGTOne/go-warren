@@ -17,7 +17,7 @@ func TestNackingHandler(t *testing.T) {
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
 
-	mockConn.EXPECT().NackMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().NackMsg(mockMsg).Return(nil)
 
 	err := errors.New("Something went wrong!")
 

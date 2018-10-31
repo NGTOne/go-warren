@@ -22,7 +22,7 @@ func TestUnsuccessfulProcessing(t *testing.T) {
 		errors.New("Something went wrong!"),
 	)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")
@@ -45,7 +45,7 @@ func TestUnsuccessfulReply(t *testing.T) {
 	mockConn.EXPECT().SendResponse(mockMsg, mockReply).Return(
 		errors.New("Something went wrong!"),
 	)
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.AddSyncAction(mockAction, "foo")
@@ -64,10 +64,10 @@ func TestUnsuccessfulAck(t *testing.T) {
 	mockMsg.EXPECT().GetHeaderValue("action").Return("foo", nil)
 	mockAction.EXPECT().Process(mockMsg).Return(nil)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(
+	mockConn.EXPECT().AckMsg(mockMsg).Return(
 		errors.New("Something went wrong!"),
 	)
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")

@@ -20,6 +20,6 @@ func (handler AckingHandler) ProcessErr (
 ) error {
 	// We've already encountered one error; not much we can do if we hit
 	// another
-	handler.conn.AckMessage(msg)
+	handler.conn.AckMsg(msg)
 	return e
 }

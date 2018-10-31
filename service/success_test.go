@@ -19,7 +19,7 @@ func TestSuccessfulAsync(t *testing.T) {
 	mockMsg.EXPECT().GetHeaderValue("action").Return("foo", nil)
 	mockAction.EXPECT().Process(mockMsg).Return(nil)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")
@@ -40,7 +40,7 @@ func TestSuccessfulSync(t *testing.T) {
 	mockAction.EXPECT().Process(mockMsg).Return(mockReply, nil)
 
 	mockConn.EXPECT().SendResponse(mockMsg, mockReply).Return(nil)
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	con := service.NewConsumer(mockConn)
 	con.AddSyncAction(mockAction, "foo")

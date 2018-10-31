@@ -20,6 +20,6 @@ func (handler NackingHandler) ProcessErr (
 ) error {
 	// We've already encountered one error; not much we can do if we hit
 	// another
-	handler.conn.NackMessage(msg)
+	handler.conn.NackMsg(msg)
 	return e
 }

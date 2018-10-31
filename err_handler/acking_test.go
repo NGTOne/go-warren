@@ -17,7 +17,7 @@ func TestAckingHandler(t *testing.T) {
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
 
-	mockConn.EXPECT().AckMessage(mockMsg).Return(nil)
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
 	err := errors.New("Something went wrong!")
 
