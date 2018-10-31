@@ -1,4 +1,4 @@
-package service
+package conn
 
 type Message interface {
 	GetHeaderValue(headerName string) (string, error)

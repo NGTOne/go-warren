@@ -3,10 +3,11 @@ package service
 import (
 	"errors"
 	"strings"
+	"github.com/NGTOne/warren/conn"
 )
 
 type Consumer struct {
-	conn Connection
+	conn conn.Connection
 	actionHeader string
 	syncActions map[string]SynchronousAction
 	asyncActions map[string]AsynchronousAction
@@ -15,7 +16,7 @@ type Consumer struct {
 	replyErrHandler ErrorHandler
 }
 
-func NewConsumer(conn Connection) *Consumer {
+func NewConsumer(conn conn.Connection) *Consumer {
 	return &Consumer{
 		conn: conn,
 	}
@@ -72,14 +73,14 @@ func (con *Consumer) AddSyncAction(
 }
 
 func (con *Consumer) Listen() {
-	con.conn.SetNewMessageCallback(func (msg Message) {
+	con.conn.SetNewMessageCallback(func (msg conn.Message) {
 		con.processMsg(msg)
 	})
 
 	con.conn.Listen()
 }
 
-func (con *Consumer) processMsg(msg Message) {
+func (con *Consumer) processMsg(msg conn.Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if (err != nil) {
@@ -90,7 +91,7 @@ func (con *Consumer) processMsg(msg Message) {
 		}
 	}
 
-	var result Message
+	var result conn.Message
 	if async, ok := con.asyncActions[action]; ok {
 		err = async.Process(msg)
 	} else if sync, ok := con.syncActions[action]; ok {

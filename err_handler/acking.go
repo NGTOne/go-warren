@@ -1,21 +1,21 @@
-package error
+package err_handler
 
 import(
-    "github.com/NGTOne/warren/service"
+    "github.com/NGTOne/warren/conn"
 )
 
 type AckingErrorHandler struct {
-	conn service.Connection
+	conn conn.Connection
 }
 
-func NewAckingHandler(conn service.Connection) AckingErrorHandler {
+func NewAckingHandler(conn conn.Connection) AckingErrorHandler {
 	return AckingErrorHandler{
 		conn: conn,
 	}
 }
 
 func (handler *AckingErrorHandler) ProcessError (
-	msg service.Message,
+	msg conn.Message,
 	e error,
 ) error {
 	// We've already encountered one error; not much we can do if we hit

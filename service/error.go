@@ -1,5 +1,9 @@
 package service
 
+import(
+	"github.com/NGTOne/warren/conn"
+)
+
 type ErrorHandler interface {
-	ProcessError(msg Message, e error) error
+	ProcessError(msg conn.Message, e error) error
 }

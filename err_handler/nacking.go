@@ -1,21 +1,21 @@
-package error
+package err_handler
 
 import(
-    "github.com/NGTOne/warren/service"
+    "github.com/NGTOne/warren/conn"
 )
 
 type NackingErrorHandler struct {
-	conn service.Connection
+	conn conn.Connection
 }
 
-func NewNackingHandler(conn service.Connection) NackingErrorHandler {
+func NewNackingHandler(conn conn.Connection) NackingErrorHandler {
 	return NackingErrorHandler{
 		conn: conn,
 	}
 }
 
 func (handler *NackingErrorHandler) ProcessError (
-	msg service.Message,
+	msg conn.Message,
 	e error,
 ) error {
 	// We've already encountered one error; not much we can do if we hit
