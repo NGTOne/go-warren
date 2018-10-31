@@ -14,7 +14,7 @@ func NewAckingHandler(conn conn.Connection) AckingErrorHandler {
 	}
 }
 
-func (handler *AckingErrorHandler) ProcessError (
+func (handler AckingErrorHandler) ProcessError (
 	msg conn.Message,
 	e error,
 ) error {

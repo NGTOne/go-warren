@@ -14,7 +14,7 @@ func NewNackingHandler(conn conn.Connection) NackingErrorHandler {
 	}
 }
 
-func (handler *NackingErrorHandler) ProcessError (
+func (handler NackingErrorHandler) ProcessError (
 	msg conn.Message,
 	e error,
 ) error {
