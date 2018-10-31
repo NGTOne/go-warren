@@ -95,10 +95,11 @@ func (con *Consumer) processMsg(msg Message) {
 		return
 	}
 
+	var result Message
 	if async, ok := con.asyncActions[action]; ok {
-		async.Process(msg)
+		err = async.Process(msg)
 	} else if sync, ok := con.syncActions[action]; ok {
-		sync.Process(msg)
+		result, err = sync.Process(msg)
 	} else {
 		con.processErrHandler.ProcessError(
 			msg,
@@ -107,6 +108,20 @@ func (con *Consumer) processMsg(msg Message) {
 				action,
 			}, " ")),
 		)
+		con.cleanUpAfterError(msg)
 		return
+	}
+
+	if (err != nil) {
+		con.processErrHandler.ProcessError(
+			msg,
+			err,
+		)
+		con.cleanUpAfterError(msg)
+		return
+	}
+
+	if (result != nil) {
+		err = con.conn.SendResponse(msg, result)
 	}
 }
