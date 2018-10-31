@@ -1,4 +1,4 @@
-package service
+package err_handler
 
 import(
 	"github.com/NGTOne/warren/conn"

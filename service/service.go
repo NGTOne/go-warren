@@ -13,8 +13,8 @@ type consumer struct {
 	syncActions map[string]SynchronousAction
 	asyncActions map[string]AsynchronousAction
 
-	processErrHandler ErrorHandler
-	replyErrHandler ErrorHandler
+	processErrHandler err_handler.ErrorHandler
+	replyErrHandler err_handler.ErrorHandler
 }
 
 func NewConsumer(conn conn.Connection) *consumer {
@@ -32,11 +32,15 @@ func (con *consumer) SetActionHeader (header string) {
 	con.actionHeader = header
 }
 
-func (con *consumer) SetProcessErrorHandler(handler ErrorHandler) {
+func (con *consumer) SetProcessErrorHandler(
+	handler err_handler.ErrorHandler,
+) {
 	con.processErrHandler = handler
 }
 
-func (con *consumer) SetReplyErrorHandler(handler ErrorHandler) {
+func (con *consumer) SetReplyErrorHandler(
+	handler err_handler.ErrorHandler,
+) {
 	con.replyErrHandler = handler
 }
 
