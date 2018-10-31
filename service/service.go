@@ -23,6 +23,8 @@ func NewConsumer(conn conn.Connection) *Consumer {
 		actionHeader: "action",
 		processErrHandler: err_handler.NewAckingHandler(conn),
 		replyErrHandler: err_handler.NewAckingHandler(conn),
+		syncActions: make(map[string]SynchronousAction),
+		asyncActions: make(map[string]AsynchronousAction),
 	}
 }
 
