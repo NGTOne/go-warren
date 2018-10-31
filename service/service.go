@@ -7,7 +7,7 @@ import (
 	"github.com/NGTOne/warren/conn"
 )
 
-type Consumer struct {
+type consumer struct {
 	conn conn.Connection
 	actionHeader string
 	syncActions map[string]SynchronousAction
@@ -17,8 +17,8 @@ type Consumer struct {
 	replyErrHandler ErrorHandler
 }
 
-func NewConsumer(conn conn.Connection) *Consumer {
-	return &Consumer{
+func NewConsumer(conn conn.Connection) *consumer {
+	return &consumer{
 		conn: conn,
 		actionHeader: "action",
 		processErrHandler: err_handler.NewAckingHandler(conn),
@@ -28,11 +28,11 @@ func NewConsumer(conn conn.Connection) *Consumer {
 	}
 }
 
-func (con *Consumer) SetActionHeader (header string) {
+func (con *consumer) SetActionHeader (header string) {
 	con.actionHeader = header
 }
 
-func (con *Consumer) actionAlreadyExists (name string) error {
+func (con *consumer) actionAlreadyExists (name string) error {
 	if _, alreadyPresent := con.asyncActions[name]; alreadyPresent {
 		return errors.New(strings.Join([]string{
 			"Action",
@@ -52,7 +52,7 @@ func (con *Consumer) actionAlreadyExists (name string) error {
 	return nil
 }
 
-func (con *Consumer) AddAsyncAction(
+func (con *consumer) AddAsyncAction(
 	action AsynchronousAction,
 	name string,
 ) error {
@@ -65,7 +65,7 @@ func (con *Consumer) AddAsyncAction(
 	return nil
 }
 
-func (con *Consumer) AddSyncAction(
+func (con *consumer) AddSyncAction(
 	action SynchronousAction,
 	name string,
 ) error {
@@ -78,7 +78,7 @@ func (con *Consumer) AddSyncAction(
 	return nil
 }
 
-func (con *Consumer) Listen() {
+func (con *consumer) Listen() {
 	con.conn.SetNewMessageCallback(func (msg conn.Message) {
 		con.processMsg(msg)
 	})
@@ -86,7 +86,7 @@ func (con *Consumer) Listen() {
 	con.conn.Listen()
 }
 
-func (con *Consumer) processMsg(msg conn.Message) {
+func (con *consumer) processMsg(msg conn.Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if (err != nil) {
