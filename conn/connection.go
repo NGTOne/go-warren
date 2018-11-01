@@ -1,6 +1,7 @@
 package conn
 
 type Message interface {
+	GetAllHeaders() map[string]string
 	GetHeaderValue(headerName string) (string, error)
 	GetBody() []byte
 }

@@ -32,6 +32,18 @@ func (m *MockMessage) EXPECT() *MockMessageMockRecorder {
 	return m.recorder
 }
 
+// GetAllHeaders mocks base method
+func (m *MockMessage) GetAllHeaders() map[string]string {
+	ret := m.ctrl.Call(m, "GetAllHeaders")
+	ret0, _ := ret[0].(map[string]string)
+	return ret0
+}
+
+// GetAllHeaders indicates an expected call of GetAllHeaders
+func (mr *MockMessageMockRecorder) GetAllHeaders() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllHeaders", reflect.TypeOf((*MockMessage)(nil).GetAllHeaders))
+}
+
 // GetBody mocks base method
 func (m *MockMessage) GetBody() []byte {
 	ret := m.ctrl.Call(m, "GetBody")
