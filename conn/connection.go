@@ -7,7 +7,7 @@ type Message interface {
 }
 
 type Connection interface {
-	Listen(f func (msg Message))
+	Listen(f func(msg Message))
 	AckMsg(m Message) error
 	NackMsg(m Message) error
 	SendResponse(original Message, response Message) error

@@ -1,7 +1,7 @@
 package err_handler
 
-import(
-    "github.com/NGTOne/warren/conn"
+import (
+	"github.com/NGTOne/warren/conn"
 )
 
 type CompositionalHandler struct {
@@ -14,11 +14,11 @@ func NewCompositionalHandler(handlers []ErrHandler) CompositionalHandler {
 	}
 }
 
-func (handler CompositionalHandler) ProcessErr (
+func (handler CompositionalHandler) ProcessErr(
 	msg conn.Message,
 	e error,
 ) error {
-	for _, handler := range handler.handlers{
+	for _, handler := range handler.handlers {
 		e = handler.ProcessErr(msg, e)
 	}
 

@@ -1,13 +1,13 @@
 package service_test
 
-import(
+import (
 	"github.com/NGTOne/warren/service"
 	"github.com/NGTOne/warren/test_mocks"
 
-	"testing"
+	"errors"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"errors"
+	"testing"
 )
 
 func TestMissingActionHeader(t *testing.T) {

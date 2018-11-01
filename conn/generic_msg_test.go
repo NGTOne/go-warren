@@ -1,17 +1,17 @@
 package conn_test
 
-import(
+import (
 	"github.com/NGTOne/warren/conn"
 
 	"errors"
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestNewMessage(t *testing.T) {
 	body := []byte("This is the body.")
 	headers := map[string]interface{}{
-		"foo": "bar",
+		"foo":    "bar",
 		"action": "consequence",
 	}
 

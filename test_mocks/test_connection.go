@@ -4,14 +4,14 @@ package test_mocks
 // to give it at least a little implementation-y goodness or else things won't
 // work right
 
-import(
+import (
 	"github.com/NGTOne/warren/conn"
 
 	"github.com/golang/mock/gomock"
 	"reflect"
 )
 
-type TestConnection struct{
+type TestConnection struct {
 	ctrl     *gomock.Controller
 	recorder *TestConnectionMockRecorder
 	callback func(conn.Message)
@@ -54,7 +54,7 @@ func (mr *TestConnectionMockRecorder) AckMsg(arg0 interface{}) *gomock.Call {
 }
 
 // Listen mocks base method
-func (m *TestConnection) Listen(f func (msg conn.Message)) {
+func (m *TestConnection) Listen(f func(msg conn.Message)) {
 	f(m.msg)
 }
 

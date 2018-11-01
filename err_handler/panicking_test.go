@@ -1,13 +1,13 @@
 package err_handler_test
 
-import(
+import (
 	"github.com/NGTOne/warren/err_handler"
 	"github.com/NGTOne/warren/test_mocks"
 
-	"testing"
+	"errors"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"errors"
+	"testing"
 )
 
 func TestPanickingHandler(t *testing.T) {
@@ -18,5 +18,5 @@ func TestPanickingHandler(t *testing.T) {
 	err := errors.New("Something went wrong!")
 	handler := err_handler.PanickingHandler{}
 
-	assert.Panics(t, func() {handler.ProcessErr(mockMsg, err)})
+	assert.Panics(t, func() { handler.ProcessErr(mockMsg, err) })
 }

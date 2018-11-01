@@ -2,33 +2,33 @@ package service
 
 import (
 	"errors"
-	"strings"
-	"github.com/NGTOne/warren/err_handler"
 	"github.com/NGTOne/warren/conn"
+	"github.com/NGTOne/warren/err_handler"
+	"strings"
 )
 
 type consumer struct {
-	conn conn.Connection
+	conn         conn.Connection
 	actionHeader string
-	syncActions map[string]SynchronousAction
+	syncActions  map[string]SynchronousAction
 	asyncActions map[string]AsynchronousAction
 
 	processErrHandler err_handler.ErrHandler
-	replyErrHandler err_handler.ErrHandler
+	replyErrHandler   err_handler.ErrHandler
 }
 
 func NewConsumer(conn conn.Connection) *consumer {
 	return &consumer{
-		conn: conn,
-		actionHeader: "action",
+		conn:              conn,
+		actionHeader:      "action",
 		processErrHandler: err_handler.NewAckingHandler(conn),
-		replyErrHandler: err_handler.NewAckingHandler(conn),
-		syncActions: make(map[string]SynchronousAction),
-		asyncActions: make(map[string]AsynchronousAction),
+		replyErrHandler:   err_handler.NewAckingHandler(conn),
+		syncActions:       make(map[string]SynchronousAction),
+		asyncActions:      make(map[string]AsynchronousAction),
 	}
 }
 
-func (con *consumer) SetActionHeader (header string) {
+func (con *consumer) SetActionHeader(header string) {
 	con.actionHeader = header
 }
 
@@ -44,7 +44,7 @@ func (con *consumer) SetReplyErrHandler(
 	con.replyErrHandler = handler
 }
 
-func (con *consumer) actionAlreadyExists (name string) error {
+func (con *consumer) actionAlreadyExists(name string) error {
 	if _, alreadyPresent := con.asyncActions[name]; alreadyPresent {
 		return errors.New(strings.Join([]string{
 			"Action",
@@ -69,7 +69,7 @@ func (con *consumer) AddAsyncAction(
 	name string,
 ) error {
 	err := con.actionAlreadyExists(name)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
@@ -82,7 +82,7 @@ func (con *consumer) AddSyncAction(
 	name string,
 ) error {
 	err := con.actionAlreadyExists(name)
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
@@ -91,7 +91,7 @@ func (con *consumer) AddSyncAction(
 }
 
 func (con *consumer) Listen() {
-	con.conn.Listen(func (msg conn.Message) {
+	con.conn.Listen(func(msg conn.Message) {
 		con.processMsg(msg)
 	})
 }
@@ -99,7 +99,7 @@ func (con *consumer) Listen() {
 func (con *consumer) processMsg(msg conn.Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
-	if (err != nil) {
+	if err != nil {
 		con.processErrHandler.ProcessErr(msg, err)
 		// If we don't know what action to take, we're done here
 		return
@@ -130,22 +130,22 @@ func (con *consumer) processMsg(msg conn.Message) {
 		return
 	}
 
-	if (err != nil) {
+	if err != nil {
 		err = con.processErrHandler.ProcessErr(msg, err)
 		return
 	}
 
-	if (result != nil) {
+	if result != nil {
 		err = con.conn.SendResponse(msg, result)
 
-		if (err != nil) {
+		if err != nil {
 			con.replyErrHandler.ProcessErr(msg, err)
 			return
 		}
 	}
 
 	err = con.conn.AckMsg(msg)
-	if (err != nil) {
+	if err != nil {
 		con.replyErrHandler.ProcessErr(msg, err)
 		return
 	}

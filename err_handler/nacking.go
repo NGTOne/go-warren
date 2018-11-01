@@ -1,7 +1,7 @@
 package err_handler
 
-import(
-    "github.com/NGTOne/warren/conn"
+import (
+	"github.com/NGTOne/warren/conn"
 )
 
 type NackingHandler struct {
@@ -14,7 +14,7 @@ func NewNackingHandler(conn conn.Connection) NackingHandler {
 	}
 }
 
-func (handler NackingHandler) ProcessErr (
+func (handler NackingHandler) ProcessErr(
 	msg conn.Message,
 	e error,
 ) error {

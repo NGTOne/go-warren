@@ -1,6 +1,6 @@
 package err_handler
 
-import(
+import (
 	"github.com/NGTOne/warren/conn"
 )
 

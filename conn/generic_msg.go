@@ -1,25 +1,25 @@
 package conn
 
-import(
-	"strings"
+import (
 	"errors"
+	"strings"
 )
 
 type GenericMsg struct {
 	headers map[string]interface{}
-	body []byte
+	body    []byte
 }
 
 func NewGenericMsg(headers map[string]interface{}, body []byte) GenericMsg {
 	return GenericMsg{
-		body: body,
+		body:    body,
 		headers: headers,
 	}
 }
 
 func GenericMsgFromOther(other Message) GenericMsg {
 	return GenericMsg{
-		body: other.GetBody(),
+		body:    other.GetBody(),
 		headers: other.GetAllHeaders(),
 	}
 }
