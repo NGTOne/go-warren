@@ -4,17 +4,17 @@ import (
 	"github.com/NGTOne/warren/conn"
 )
 
-type AckingHandler struct {
+type ackingHandler struct {
 	conn conn.Connection
 }
 
-func NewAckingHandler(conn conn.Connection) AckingHandler {
-	return AckingHandler{
+func NewAckingHandler(conn conn.Connection) ackingHandler {
+	return ackingHandler{
 		conn: conn,
 	}
 }
 
-func (handler AckingHandler) ProcessErr(
+func (handler ackingHandler) ProcessErr(
 	msg conn.Message,
 	e error,
 ) error {

@@ -4,17 +4,17 @@ import (
 	"github.com/NGTOne/warren/conn"
 )
 
-type CompositionalHandler struct {
+type compositionalHandler struct {
 	handlers []ErrHandler
 }
 
-func NewCompositionalHandler(handlers []ErrHandler) CompositionalHandler {
-	return CompositionalHandler{
+func NewCompositionalHandler(handlers []ErrHandler) compositionalHandler {
+	return compositionalHandler{
 		handlers: handlers,
 	}
 }
 
-func (handler CompositionalHandler) ProcessErr(
+func (handler compositionalHandler) ProcessErr(
 	msg conn.Message,
 	e error,
 ) error {
