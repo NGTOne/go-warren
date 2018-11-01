@@ -1,6 +1,6 @@
 package amqp_0_9_1
 
-import(
+import (
 	"errors"
 	"strings"
 )
@@ -11,7 +11,7 @@ func (c *Connection) SetTargetQueue(name string) error {
 	// we'll make the queue stick around forever
 	_, err := c.amqpChan.QueueDeclare(name, true, false, false, false, nil)
 
-	if (err != nil) {
+	if err != nil {
 		c.queue = name
 	}
 
@@ -20,11 +20,11 @@ func (c *Connection) SetTargetQueue(name string) error {
 
 type ExchangeType string
 
-const(
-	Direct	ExchangeType = "direct"
-	Fanout	ExchangeType = "fanout"
-	Topic	ExchangeType = "topic"
-	Headers	ExchangeType = "headers"
+const (
+	Direct  ExchangeType = "direct"
+	Fanout  ExchangeType = "fanout"
+	Topic   ExchangeType = "topic"
+	Headers ExchangeType = "headers"
 )
 
 func (c *Connection) CreateAndBindExchange(
@@ -32,7 +32,7 @@ func (c *Connection) CreateAndBindExchange(
 	exchType ExchangeType,
 	routingKey string,
 ) error {
-	if (c.queue == "") {
+	if c.queue == "" {
 		return errors.New(strings.Join([]string{
 			"Need to create a queue before attempting to bind ",
 			"it to an exchange",
@@ -51,12 +51,12 @@ func (c *Connection) CreateAndBindExchange(
 		nil,
 	)
 
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
-	err = c.amqpChan.QueueBind(c.queue, routingKey, name, false,nil)
-	if (err != nil) {
+	err = c.amqpChan.QueueBind(c.queue, routingKey, name, false, nil)
+	if err != nil {
 		return err
 	}
 

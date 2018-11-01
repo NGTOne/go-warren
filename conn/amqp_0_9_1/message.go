@@ -1,12 +1,12 @@
 package amqp_0_9_1
 
-import(
-	"github.com/streadway/amqp"
+import (
 	"errors"
+	"github.com/streadway/amqp"
 	"strings"
 )
 
-type message struct{
+type message struct {
 	inner amqp.Delivery
 }
 

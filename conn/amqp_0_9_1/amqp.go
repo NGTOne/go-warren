@@ -1,8 +1,8 @@
 package amqp_0_9_1
 
-import(
-	"github.com/streadway/amqp"
+import (
 	"errors"
+	"github.com/streadway/amqp"
 
 	"github.com/NGTOne/warren/conn"
 )
@@ -12,26 +12,26 @@ import(
 type Connection struct {
 	amqpConn *amqp.Connection
 	amqpChan *amqp.Channel
-	queue string
+	queue    string
 }
 
 func NewConn(url string) (*Connection, error) {
 	amqpConn, err := amqp.Dial(url)
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
 	defer amqpConn.Close()
 
 	amqpChan, err := amqpConn.Channel()
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
 	defer amqpChan.Close()
 
 	err = amqpChan.Qos(1, 0, false)
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 
@@ -44,7 +44,7 @@ func NewConn(url string) (*Connection, error) {
 func (c *Connection) AckMsg(m conn.Message) error {
 	tag, err := m.GetHeaderValue("DeliveryTag")
 
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
@@ -54,7 +54,7 @@ func (c *Connection) AckMsg(m conn.Message) error {
 func (c *Connection) NackMsg(m conn.Message) error {
 	tag, err := m.GetHeaderValue("DeliveryTag")
 
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
@@ -62,10 +62,10 @@ func (c *Connection) NackMsg(m conn.Message) error {
 }
 
 func (c *Connection) Listen(f func(conn.Message)) error {
-	if (c.queue == "") {
+	if c.queue == "" {
 		return errors.New(
-                        "Need to create a queue before attempting to listen",
-                )
+			"Need to create a queue before attempting to listen",
+		)
 	}
 
 	msgs, err := c.amqpChan.Consume(
@@ -78,7 +78,7 @@ func (c *Connection) Listen(f func(conn.Message)) error {
 		nil,
 	)
 
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 
