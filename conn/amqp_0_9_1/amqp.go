@@ -29,6 +29,11 @@ func NewConn(url string) (*Connection, error) {
 
 	defer amqpChan.Close()
 
+	err = amqpChan.Qos(1, 0, false)
+	if (err != nil) {
+		return nil, err
+	}
+
 	return &Connection{
 		amqpConn: amqpConn,
 		amqpChan: amqpChan,
