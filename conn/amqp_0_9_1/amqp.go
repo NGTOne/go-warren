@@ -2,6 +2,7 @@ package amqp_0_9_1
 
 import(
 	"github.com/streadway/amqp"
+	"errors"
 
 	"github.com/NGTOne/warren/conn"
 )
@@ -58,4 +59,38 @@ func (c *Connection) NackMsg(m conn.Message) error {
 	}
 
 	return c.amqpChan.Nack(tag.(uint64), false, true)
+}
+
+func (c *Connection) Listen(f func(conn.Message)) error {
+	if (c.queue == "") {
+		return errors.New(
+                        "Need to create a queue before attempting to listen",
+                )
+	}
+
+	msgs, err := c.amqpChan.Consume(
+		c.queue,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+
+	if (err != nil) {
+		return err
+	}
+
+	forever := make(chan bool)
+
+	go func() {
+		for d := range msgs {
+			f(message{inner: d})
+		}
+	}()
+
+	<-forever
+
+	return nil
 }
