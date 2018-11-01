@@ -5,30 +5,30 @@ import (
 	"strings"
 )
 
-type GenericMsg struct {
+type genericMsg struct {
 	headers map[string]interface{}
 	body    []byte
 }
 
-func NewGenericMsg(headers map[string]interface{}, body []byte) GenericMsg {
-	return GenericMsg{
+func NewGenericMsg(headers map[string]interface{}, body []byte) genericMsg {
+	return genericMsg{
 		body:    body,
 		headers: headers,
 	}
 }
 
-func GenericMsgFromOther(other Message) GenericMsg {
-	return GenericMsg{
+func GenericMsgFromOther(other Message) genericMsg {
+	return genericMsg{
 		body:    other.GetBody(),
 		headers: other.GetAllHeaders(),
 	}
 }
 
-func (msg GenericMsg) GetAllHeaders() map[string]interface{} {
+func (msg genericMsg) GetAllHeaders() map[string]interface{} {
 	return msg.headers
 }
 
-func (msg GenericMsg) GetHeaderValue(headerName string) (interface{}, error) {
+func (msg genericMsg) GetHeaderValue(headerName string) (interface{}, error) {
 	if header, ok := msg.headers[headerName]; ok {
 		return header, nil
 	}
@@ -39,6 +39,6 @@ func (msg GenericMsg) GetHeaderValue(headerName string) (interface{}, error) {
 	}, ""))
 }
 
-func (msg GenericMsg) GetBody() []byte {
+func (msg genericMsg) GetBody() []byte {
 	return msg.body
 }
