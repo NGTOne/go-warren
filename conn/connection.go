@@ -1,8 +1,8 @@
 package conn
 
 type Message interface {
-	GetAllHeaders() map[string]string
-	GetHeaderValue(headerName string) (string, error)
+	GetAllHeaders() map[string]interface{}
+	GetHeaderValue(headerName string) (interface{}, error)
 	GetBody() []byte
 }
 

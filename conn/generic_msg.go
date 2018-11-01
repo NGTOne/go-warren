@@ -6,11 +6,11 @@ import(
 )
 
 type GenericMsg struct {
-	headers map[string]string
+	headers map[string]interface{}
 	body []byte
 }
 
-func NewGenericMsg(headers map[string]string, body []byte) GenericMsg {
+func NewGenericMsg(headers map[string]interface{}, body []byte) GenericMsg {
 	return GenericMsg{
 		body: body,
 		headers: headers,
@@ -24,11 +24,11 @@ func GenericMsgFromOther(other Message) GenericMsg {
 	}
 }
 
-func (msg GenericMsg) GetAllHeaders() map[string]string {
+func (msg GenericMsg) GetAllHeaders() map[string]interface{} {
 	return msg.headers
 }
 
-func (msg GenericMsg) GetHeaderValue(headerName string) (string, error) {
+func (msg GenericMsg) GetHeaderValue(headerName string) (interface{}, error) {
 	if header, ok := msg.headers[headerName]; ok {
 		return header, nil
 	}

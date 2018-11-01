@@ -28,6 +28,21 @@ func TestMissingActionHeader(t *testing.T) {
 	con.Listen()
 }
 
+func TestNonStringActionHeader(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
+
+	mockMsg.EXPECT().GetHeaderValue("action").Return(-100, nil)
+
+	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+
+	con := service.NewConsumer(mockConn)
+	con.Listen()
+}
+
 func TestMissingAction(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()

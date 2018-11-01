@@ -33,9 +33,9 @@ func (m *MockMessage) EXPECT() *MockMessageMockRecorder {
 }
 
 // GetAllHeaders mocks base method
-func (m *MockMessage) GetAllHeaders() map[string]string {
+func (m *MockMessage) GetAllHeaders() map[string]interface{} {
 	ret := m.ctrl.Call(m, "GetAllHeaders")
-	ret0, _ := ret[0].(map[string]string)
+	ret0, _ := ret[0].(map[string]interface{})
 	return ret0
 }
 
@@ -57,9 +57,9 @@ func (mr *MockMessageMockRecorder) GetBody() *gomock.Call {
 }
 
 // GetHeaderValue mocks base method
-func (m *MockMessage) GetHeaderValue(arg0 string) (string, error) {
+func (m *MockMessage) GetHeaderValue(arg0 string) (interface{}, error) {
 	ret := m.ctrl.Call(m, "GetHeaderValue", arg0)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(interface{})
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

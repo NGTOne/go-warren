@@ -107,17 +107,26 @@ func (con *consumer) processMsg(msg conn.Message) {
 		}
 	}
 
+	if _, ok := action.(string); !ok {
+		err = con.processErrHandler.ProcessErr(
+			msg,
+			errors.New("Action header was not a string"),
+		)
+		// We don't know what action to take here, either
+		return
+	}
+
 	var result conn.Message
-	if async, ok := con.asyncActions[action]; ok {
+	if async, ok := con.asyncActions[action.(string)]; ok {
 		err = async.Process(msg)
-	} else if sync, ok := con.syncActions[action]; ok {
+	} else if sync, ok := con.syncActions[action.(string)]; ok {
 		result, err = sync.Process(msg)
 	} else {
 		err = con.processErrHandler.ProcessErr(
 			msg,
 			errors.New(strings.Join([]string{
 				"Unknown action",
-				action,
+				action.(string),
 			}, " ")),
 		)
 		if (err != nil) {

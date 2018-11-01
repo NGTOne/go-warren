@@ -10,7 +10,7 @@ import(
 
 func TestNewMessage(t *testing.T) {
 	body := []byte("This is the body.")
-	headers := map[string]string{
+	headers := map[string]interface{}{
 		"foo": "bar",
 		"action": "consequence",
 	}
@@ -23,7 +23,7 @@ func TestNewMessage(t *testing.T) {
 
 func TestMissingHeader(t *testing.T) {
 	body := []byte{}
-	headers := map[string]string{}
+	headers := map[string]interface{}{}
 
 	msg := conn.NewGenericMsg(headers, body)
 
@@ -35,7 +35,7 @@ func TestMissingHeader(t *testing.T) {
 
 func TestPresentHeader(t *testing.T) {
 	body := []byte{}
-	headers := map[string]string{
+	headers := map[string]interface{}{
 		"action": "consequence",
 	}
 
@@ -48,7 +48,7 @@ func TestPresentHeader(t *testing.T) {
 
 func TestFromOther(t *testing.T) {
 	body := []byte{}
-	headers := map[string]string{
+	headers := map[string]interface{}{
 		"action": "consequence",
 	}
 
