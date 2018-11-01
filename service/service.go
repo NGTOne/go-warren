@@ -90,8 +90,8 @@ func (con *consumer) AddSyncAction(
 	return nil
 }
 
-func (con *consumer) Listen() {
-	con.conn.Listen(func(msg conn.Message) {
+func (con *consumer) Listen() error {
+	return con.conn.Listen(func(msg conn.Message) {
 		con.processMsg(msg)
 	})
 }

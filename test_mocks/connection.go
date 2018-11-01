@@ -46,8 +46,10 @@ func (mr *MockConnectionMockRecorder) AckMsg(arg0 interface{}) *gomock.Call {
 }
 
 // Listen mocks base method
-func (m *MockConnection) Listen(arg0 func(conn.Message)) {
-	m.ctrl.Call(m, "Listen", arg0)
+func (m *MockConnection) Listen(arg0 func(conn.Message)) error {
+	ret := m.ctrl.Call(m, "Listen", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Listen indicates an expected call of Listen
