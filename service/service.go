@@ -100,15 +100,13 @@ func (con *consumer) processMsg(msg conn.Message) {
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if (err != nil) {
-		err = con.processErrHandler.ProcessErr(msg, err)
+		con.processErrHandler.ProcessErr(msg, err)
 		// If we don't know what action to take, we're done here
-		if (err != nil) {
-			return
-		}
+		return
 	}
 
 	if _, ok := action.(string); !ok {
-		err = con.processErrHandler.ProcessErr(
+		con.processErrHandler.ProcessErr(
 			msg,
 			errors.New("Action header was not a string"),
 		)
@@ -122,41 +120,33 @@ func (con *consumer) processMsg(msg conn.Message) {
 	} else if sync, ok := con.syncActions[action.(string)]; ok {
 		result, err = sync.Process(msg)
 	} else {
-		err = con.processErrHandler.ProcessErr(
+		con.processErrHandler.ProcessErr(
 			msg,
 			errors.New(strings.Join([]string{
 				"Unknown action",
 				action.(string),
 			}, " ")),
 		)
-		if (err != nil) {
-			return
-		}
+		return
 	}
 
 	if (err != nil) {
 		err = con.processErrHandler.ProcessErr(msg, err)
-		if (err != nil) {
-			return
-		}
+		return
 	}
 
 	if (result != nil) {
 		err = con.conn.SendResponse(msg, result)
 
 		if (err != nil) {
-			err = con.replyErrHandler.ProcessErr(msg, err)
-			if (err != nil) {
-				return
-			}
+			con.replyErrHandler.ProcessErr(msg, err)
+			return
 		}
 	}
 
 	err = con.conn.AckMsg(msg)
 	if (err != nil) {
-		err = con.replyErrHandler.ProcessErr(msg, err)
-		if (err != nil) {
-			return
-		}
+		con.replyErrHandler.ProcessErr(msg, err)
+		return
 	}
 }
