@@ -5,6 +5,7 @@ import(
 
 	"testing"
 	"errors"
+	"strings"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/streadway/amqp"
@@ -104,4 +105,24 @@ func TestCreateAndBindSuccess(t *testing.T) {
 	err := conn.CreateAndBindExchange("barbaz", amqp_0_9_1.Fanout, "")
 
 	assert.Nil(t, err)
+}
+
+func TestCreateAndBindNoQueue(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+
+	err := conn.CreateAndBindExchange("barbaz", amqp_0_9_1.Fanout, "")
+
+	assert.Equal(t, errors.New(strings.Join([]string{
+		"Need to create a queue before attempting to bind it to ",
+		"an exchange",
+	}, "")), err)
 }
