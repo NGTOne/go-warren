@@ -58,14 +58,10 @@ type Connection struct {
 }
 
 func NewConn(qConn AMQPConn) (*Connection, error) {
-	defer qConn.Close()
-
 	qChan, err := qConn.Channel()
 	if err != nil {
 		return nil, err
 	}
-
-	defer qChan.Close()
 
 	err = qChan.Qos(1, 0, false)
 	if err != nil {
@@ -120,6 +116,7 @@ func (c *Connection) Listen(f func(conn.Message)) error {
 	}
 
 	forever := make(chan bool)
+	defer c.qChan.Close()
 
 	go func() {
 		for d := range msgs {
