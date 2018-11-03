@@ -20,6 +20,12 @@ type amqpChan interface {
 	Qos(prefetchCount, prefetchSize int, global bool) error
 	Ack(deliveryTag uint64, multiple bool) error
 	Nack(deliveryTag uint64, multiple bool, requeue bool) error
+	Publish(
+		exchange, key string,
+		mandatory, immediate bool,
+		msg amqp.Publishing,
+	) error
+
 	Consume(
 		queue, consumer string,
 		autoAck, exclusive, noLocal, noWait bool,
@@ -124,4 +130,30 @@ func (c *Connection) Listen(f func(conn.Message)) error {
 	<-forever
 
 	return nil
+}
+
+func (c *Connection) SendResponse(
+	original conn.Message,
+	response conn.Message,
+) error {
+	// For the moment, we're gonna assume that the original is untouched
+	// and that we can just type-assert it directly
+	// Not _100%_ satisfied with it, but not much I can do about it
+	// TODO: Figure out how to avoid the original message being mutated
+	//       that doesn't involve storing it in the connection (and making
+	//       it stateful in the process)
+	amqpOriginal := original.(message)
+
+	return c.amqpChan.Publish(
+		"",
+		amqpOriginal.inner.ReplyTo,
+		false,
+		false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			CorrelationId: amqpOriginal.inner.CorrelationId,
+			Headers: response.GetAllHeaders(),
+			Body: response.GetBody(),
+		},
+	)
 }
