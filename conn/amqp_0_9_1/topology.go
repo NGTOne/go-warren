@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (c *Connection) SetTargetQueue(name string) error {
+func (c *connection) SetTargetQueue(name string) error {
 	// We're gonna make a few assumptions here - since this lib is mainly
 	// meant to take the place of "traditional" HTTP-based microservices,
 	// we'll make the queue stick around forever
@@ -27,7 +27,7 @@ const (
 	Headers ExchangeType = "headers"
 )
 
-func (c *Connection) CreateAndBindExchange(
+func (c *connection) CreateAndBindExchange(
 	name string,
 	exchType ExchangeType,
 	routingKey string,

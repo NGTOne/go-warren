@@ -51,13 +51,13 @@ type AMQPChan interface {
 
 // Provides a couple of thin convenience wrappers around streadway's AMQP
 // library, so we can plug it into warren in a consistent way
-type Connection struct {
+type connection struct {
 	qConn AMQPConn
 	qChan AMQPChan
 	queue    string
 }
 
-func NewConn(qConn AMQPConn) (*Connection, error) {
+func NewConn(qConn AMQPConn) (*connection, error) {
 	qChan, err := qConn.Channel()
 	if err != nil {
 		return nil, err
@@ -68,13 +68,13 @@ func NewConn(qConn AMQPConn) (*Connection, error) {
 		return nil, err
 	}
 
-	return &Connection{
+	return &connection{
 		qConn: qConn,
 		qChan: qChan,
 	}, nil
 }
 
-func (c *Connection) AckMsg(m conn.Message) error {
+func (c *connection) AckMsg(m conn.Message) error {
 	tag, err := m.GetHeaderValue("DeliveryTag")
 
 	if err != nil {
@@ -84,7 +84,7 @@ func (c *Connection) AckMsg(m conn.Message) error {
 	return c.qChan.Ack(tag.(uint64), false)
 }
 
-func (c *Connection) NackMsg(m conn.Message) error {
+func (c *connection) NackMsg(m conn.Message) error {
 	tag, err := m.GetHeaderValue("DeliveryTag")
 
 	if err != nil {
@@ -94,7 +94,7 @@ func (c *Connection) NackMsg(m conn.Message) error {
 	return c.qChan.Nack(tag.(uint64), false, true)
 }
 
-func (c *Connection) Listen(f func(conn.Message)) error {
+func (c *connection) Listen(f func(conn.Message)) error {
 	if c.queue == "" {
 		return errors.New(
 			"Need to create a queue before attempting to listen",
@@ -129,7 +129,7 @@ func (c *Connection) Listen(f func(conn.Message)) error {
 	return nil
 }
 
-func (c *Connection) SendResponse(
+func (c *connection) SendResponse(
 	original conn.Message,
 	response conn.Message,
 ) error {
