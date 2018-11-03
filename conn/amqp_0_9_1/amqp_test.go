@@ -105,3 +105,47 @@ func TestAckMissingHeader(t *testing.T) {
 
 	assert.Equal(t, errors.New("Something went wrong!"), err)
 }
+
+func TestNackSuccess(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+
+	mockMsg.EXPECT().GetHeaderValue("DeliveryTag").Return(uint64(123), nil)
+	mockChan.EXPECT().Nack(uint64(123), false, true).Return(nil)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+
+	err := conn.NackMsg(mockMsg)
+
+	assert.Nil(t, err)
+}
+
+func TestNackMissingHeader(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+
+	mockMsg.EXPECT().GetHeaderValue("DeliveryTag").Return(
+		-1,
+		errors.New("Something went wrong!"),
+	)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+
+	err := conn.NackMsg(mockMsg)
+
+	assert.Equal(t, errors.New("Something went wrong!"), err)
+}
