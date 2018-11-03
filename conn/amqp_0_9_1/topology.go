@@ -9,7 +9,7 @@ func (c *Connection) SetTargetQueue(name string) error {
 	// We're gonna make a few assumptions here - since this lib is mainly
 	// meant to take the place of "traditional" HTTP-based microservices,
 	// we'll make the queue stick around forever
-	_, err := c.amqpChan.QueueDeclare(name, true, false, false, false, nil)
+	_, err := c.qChan.QueueDeclare(name, true, false, false, false, nil)
 
 	if err != nil {
 		c.queue = name
@@ -41,7 +41,7 @@ func (c *Connection) CreateAndBindExchange(
 
 	// Like before, we're gonna make a few basic assumptions here just
 	// to make life simple
-	err := c.amqpChan.ExchangeDeclare(
+	err := c.qChan.ExchangeDeclare(
 		name,
 		string(exchType),
 		true,
@@ -55,7 +55,7 @@ func (c *Connection) CreateAndBindExchange(
 		return err
 	}
 
-	err = c.amqpChan.QueueBind(c.queue, routingKey, name, false, nil)
+	err = c.qChan.QueueBind(c.queue, routingKey, name, false, nil)
 	if err != nil {
 		return err
 	}

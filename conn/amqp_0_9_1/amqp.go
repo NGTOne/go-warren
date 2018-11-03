@@ -10,12 +10,12 @@ import (
 // streadway/amqp doesn't provide interfaces around a couple of its core types,
 // making it impossible to mock them using library builtins
 // So we'll create our own instead
-type amqpConn interface {
-	Channel() (amqpChan, error)
+type AMQPConn interface {
+	Channel() (AMQPChan, error)
 	Close()
 }
 
-type amqpChan interface {
+type AMQPChan interface {
 	Close()
 	Qos(prefetchCount, prefetchSize int, global bool) error
 	Ack(deliveryTag uint64, multiple bool) error
@@ -52,15 +52,15 @@ type amqpChan interface {
 // Provides a couple of thin convenience wrappers around streadway's AMQP
 // library, so we can plug it into warren in a consistent way
 type Connection struct {
-	amqpConn amqpConn
-	amqpChan amqpChan
+	qConn AMQPConn
+	qChan AMQPChan
 	queue    string
 }
 
-func NewConn(conn amqpConn) (*Connection, error) {
-	defer conn.Close()
+func NewConn(qConn AMQPConn) (*Connection, error) {
+	defer qConn.Close()
 
-	qChan, err := conn.Channel()
+	qChan, err := qConn.Channel()
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func NewConn(conn amqpConn) (*Connection, error) {
 	}
 
 	return &Connection{
-		amqpConn: conn,
-		amqpChan: qChan,
+		qConn: qConn,
+		qChan: qChan,
 	}, nil
 }
 
@@ -85,7 +85,7 @@ func (c *Connection) AckMsg(m conn.Message) error {
 		return err
 	}
 
-	return c.amqpChan.Ack(tag.(uint64), false)
+	return c.qChan.Ack(tag.(uint64), false)
 }
 
 func (c *Connection) NackMsg(m conn.Message) error {
@@ -95,7 +95,7 @@ func (c *Connection) NackMsg(m conn.Message) error {
 		return err
 	}
 
-	return c.amqpChan.Nack(tag.(uint64), false, true)
+	return c.qChan.Nack(tag.(uint64), false, true)
 }
 
 func (c *Connection) Listen(f func(conn.Message)) error {
@@ -105,7 +105,7 @@ func (c *Connection) Listen(f func(conn.Message)) error {
 		)
 	}
 
-	msgs, err := c.amqpChan.Consume(
+	msgs, err := c.qChan.Consume(
 		c.queue,
 		"",
 		false,
@@ -144,7 +144,7 @@ func (c *Connection) SendResponse(
 	//       it stateful in the process)
 	amqpOriginal := original.(message)
 
-	return c.amqpChan.Publish(
+	return c.qChan.Publish(
 		"",
 		amqpOriginal.inner.ReplyTo,
 		false,
