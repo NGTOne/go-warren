@@ -7,37 +7,68 @@ import (
 	"github.com/NGTOne/warren/conn"
 )
 
+// streadway/amqp doesn't provide interfaces around a couple of its core types,
+// making it impossible to mock them using library builtins
+// So we'll create our own instead
+type amqpConn interface {
+	Channel() (amqpChan, error)
+	Close()
+}
+
+type amqpChan interface {
+	Close()
+	Qos(prefetchCount, prefetchSize int, global bool) error
+	Ack(deliveryTag uint64, multiple bool) error
+	Nack(deliveryTag uint64, multiple bool, requeue bool) error
+	Consume(
+		queue, consumer string,
+		autoAck, exclusive, noLocal, noWait bool,
+		args amqp.Table,
+	) (<-chan amqp.Delivery, error)
+
+	QueueDeclare(
+		name string,
+		durable, autoDelete, exclusive, noWait bool,
+		args amqp.Table,
+	) (amqp.Queue, error)
+	ExchangeDeclare(
+		name, kind string,
+		durable, autoDelete, internal, noWait bool,
+		args amqp.Table,
+	) error
+	QueueBind(
+		name, key, exchange string,
+		noWait bool,
+		args amqp.Table,
+	) error
+}
+
 // Provides a couple of thin convenience wrappers around streadway's AMQP
 // library, so we can plug it into warren in a consistent way
 type Connection struct {
-	amqpConn *amqp.Connection
-	amqpChan *amqp.Channel
+	amqpConn amqpConn
+	amqpChan amqpChan
 	queue    string
 }
 
-func NewConn(url string) (*Connection, error) {
-	amqpConn, err := amqp.Dial(url)
+func NewConn(conn amqpConn) (*Connection, error) {
+	defer conn.Close()
+
+	qChan, err := conn.Channel()
 	if err != nil {
 		return nil, err
 	}
 
-	defer amqpConn.Close()
+	defer qChan.Close()
 
-	amqpChan, err := amqpConn.Channel()
-	if err != nil {
-		return nil, err
-	}
-
-	defer amqpChan.Close()
-
-	err = amqpChan.Qos(1, 0, false)
+	err = qChan.Qos(1, 0, false)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Connection{
-		amqpConn: amqpConn,
-		amqpChan: amqpChan,
+		amqpConn: conn,
+		amqpChan: qChan,
 	}, nil
 }
 
