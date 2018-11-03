@@ -133,22 +133,24 @@ func (c *connection) SendResponse(
 	original conn.Message,
 	response conn.Message,
 ) error {
-	// For the moment, we're gonna assume that the original is untouched
-	// and that we can just type-assert it directly
-	// Not _100%_ satisfied with it, but not much I can do about it
-	// TODO: Figure out how to avoid the original message being mutated
-	//       that doesn't involve storing it in the connection (and making
-	//       it stateful in the process)
-	amqpOriginal := original.(message)
+	corrID, err := original.GetHeaderValue("CorrelationId")
+	if (err != nil) {
+		return err
+	}
+
+	replyTo, err := original.GetHeaderValue("ReplyTo")
+	if (err != nil) {
+		return err
+	}
 
 	return c.qChan.Publish(
 		"",
-		amqpOriginal.inner.ReplyTo,
+		replyTo.(string),
 		false,
 		false,
 		amqp.Publishing{
 			ContentType: "text/plain",
-			CorrelationId: amqpOriginal.inner.CorrelationId,
+			CorrelationId: corrID.(string),
 			Headers: response.GetAllHeaders(),
 			Body: response.GetBody(),
 		},
