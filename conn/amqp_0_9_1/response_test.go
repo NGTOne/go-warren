@@ -12,6 +12,8 @@ import(
 	"github.com/NGTOne/warren/test_mocks"
 )
 
+// Responding is complex enough that we'll break the tests out into a separate
+// file
 func TestSendResponseSuccess(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
