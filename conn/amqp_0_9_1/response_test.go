@@ -92,5 +92,52 @@ func TestNonStringCorrID(t *testing.T) {
 
 	err := conn.SendResponse(mockMsg, mockRes)
 
-	assert.Equal(t, errors.New("Correlation ID is not a string"), err)
+	assert.Equal(t, errors.New("CorrelationId is not a string"), err)
+}
+
+func TestNoReplyTo(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+	mockRes := test_mocks.NewMockMessage(mockCtrl)
+
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+
+	mockMsg.EXPECT().GetHeaderValue("CorrelationId").Return("f00b4r", nil)
+	mockMsg.EXPECT().GetHeaderValue("ReplyTo").Return(
+		"",
+		errors.New("Something went wrong!"),
+	)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+
+	err := conn.SendResponse(mockMsg, mockRes)
+
+	assert.Equal(t, errors.New("Something went wrong!"), err)
+}
+
+func TestNonStringReplyTo(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+	mockRes := test_mocks.NewMockMessage(mockCtrl)
+
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+
+	mockMsg.EXPECT().GetHeaderValue("CorrelationId").Return("f00b4r", nil)
+	mockMsg.EXPECT().GetHeaderValue("ReplyTo").Return(42, nil)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+
+	err := conn.SendResponse(mockMsg, mockRes)
+
+	assert.Equal(t, errors.New("ReplyTo is not a string"), err)
 }

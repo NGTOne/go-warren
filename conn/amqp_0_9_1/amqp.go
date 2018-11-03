@@ -138,7 +138,7 @@ func (c *connection) SendResponse(
 		return err
 	}
 	if _, ok := corrID.(string); !ok {
-		return errors.New("Correlation ID is not a string")
+		return errors.New("CorrelationId is not a string")
 	}
 
 	replyTo, err := original.GetHeaderValue("ReplyTo")
