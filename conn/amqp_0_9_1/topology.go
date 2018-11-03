@@ -11,7 +11,7 @@ func (c *connection) SetTargetQueue(name string) error {
 	// we'll make the queue stick around forever
 	_, err := c.qChan.QueueDeclare(name, true, false, false, false, nil)
 
-	if err != nil {
+	if err == nil {
 		c.queue = name
 	}
 
