@@ -137,10 +137,16 @@ func (c *connection) SendResponse(
 	if (err != nil) {
 		return err
 	}
+	if _, ok := corrID.(string); !ok {
+		return errors.New("Correlation ID is not a string")
+	}
 
 	replyTo, err := original.GetHeaderValue("ReplyTo")
 	if (err != nil) {
 		return err
+	}
+	if _, ok := replyTo.(string); !ok {
+		return errors.New("ReplyTo is not a string")
 	}
 
 	return c.qChan.Publish(
