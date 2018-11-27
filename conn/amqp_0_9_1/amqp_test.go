@@ -2,6 +2,7 @@ package amqp_0_9_1_test
 
 import(
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
+	warren_conn "github.com/NGTOne/warren/conn"
 
 	"testing"
 	"errors"
@@ -148,4 +149,23 @@ func TestNackMissingHeader(t *testing.T) {
 	err := conn.NackMsg(mockMsg)
 
 	assert.Equal(t, errors.New("Something went wrong!"), err)
+}
+
+func TestListenMissingQueue(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+        mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+
+        mockConn.EXPECT().Channel().Return(mockChan, nil)
+        mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+
+	err := conn.Listen(func(m warren_conn.Message) {})
+
+	assert.Equal(t, errors.New(
+		"Need to create a queue before attempting to listen",
+	), err)
 }
