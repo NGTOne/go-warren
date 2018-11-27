@@ -4,6 +4,8 @@ import(
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 	warren_conn "github.com/NGTOne/warren/conn"
 
+	"github.com/streadway/amqp"
+
 	"testing"
 	"errors"
 	"github.com/golang/mock/gomock"
@@ -168,4 +170,40 @@ func TestListenMissingQueue(t *testing.T) {
 	assert.Equal(t, errors.New(
 		"Need to create a queue before attempting to listen",
 	), err)
+}
+
+func TestConsumeError(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+        mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+
+        mockConn.EXPECT().Channel().Return(mockChan, nil)
+        mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+	mockChan.EXPECT().QueueDeclare(
+		"foo_queue",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	).Return(amqp.Queue{}, nil)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+	conn.SetTargetQueue("foo_queue")
+
+	mockChan.EXPECT().Consume(
+		"foo_queue",
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	).Return(nil, errors.New("Something went wrong!"))
+
+	err := conn.Listen(func(m warren_conn.Message) {})
+
+	assert.Equal(t, errors.New("Something went wrong!"), err)
 }
