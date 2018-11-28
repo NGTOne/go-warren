@@ -45,6 +45,16 @@ func (mr *MockConnectionMockRecorder) AckMsg(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AckMsg", reflect.TypeOf((*MockConnection)(nil).AckMsg), arg0)
 }
 
+// Disconnect mocks base method
+func (m *MockConnection) Disconnect() {
+	m.ctrl.Call(m, "Disconnect")
+}
+
+// Disconnect indicates an expected call of Disconnect
+func (mr *MockConnectionMockRecorder) Disconnect() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Disconnect", reflect.TypeOf((*MockConnection)(nil).Disconnect))
+}
+
 // Listen mocks base method
 func (m *MockConnection) Listen(arg0 func(conn.Message)) error {
 	ret := m.ctrl.Call(m, "Listen", arg0)

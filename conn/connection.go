@@ -11,4 +11,5 @@ type Connection interface {
 	AckMsg(m Message) error
 	NackMsg(m Message) error
 	SendResponse(original Message, response Message) error
+	Disconnect()
 }

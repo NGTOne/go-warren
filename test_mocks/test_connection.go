@@ -82,3 +82,13 @@ func (m *TestConnection) SendResponse(arg0, arg1 conn.Message) error {
 func (mr *TestConnectionMockRecorder) SendResponse(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendResponse", reflect.TypeOf((*TestConnection)(nil).SendResponse), arg0, arg1)
 }
+
+// Disconnect mocks base method
+func (m *TestConnection) Disconnect() {
+	m.ctrl.Call(m, "Disconnect")
+}
+
+// Disconnect indicates an expected call of Disconnect
+func (mr *TestConnectionMockRecorder) Disconnect() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Disconnect", reflect.TypeOf((*TestConnection)(nil).Disconnect))
+}
