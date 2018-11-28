@@ -1,15 +1,15 @@
 package amqp_0_9_1_test
 
-import(
+import (
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 
-	"testing"
 	"errors"
-	"strings"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
-	"github.com/streadway/amqp"
 	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
+	"github.com/golang/mock/gomock"
+	"github.com/streadway/amqp"
+	"github.com/stretchr/testify/assert"
+	"strings"
+	"testing"
 )
 
 func TestTargetQueueSuccess(t *testing.T) {

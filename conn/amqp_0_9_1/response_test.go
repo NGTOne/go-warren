@@ -1,15 +1,15 @@
 package amqp_0_9_1_test
 
-import(
+import (
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 
-	"testing"
 	"errors"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
-	"github.com/streadway/amqp"
-	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
 	"github.com/NGTOne/warren/test_mocks"
+	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
+	"github.com/golang/mock/gomock"
+	"github.com/streadway/amqp"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // Responding is complex enough that we'll break the tests out into a separate
@@ -36,7 +36,7 @@ func TestSendResponseSuccess(t *testing.T) {
 	})
 
 	mockChan.EXPECT().Publish("", "inbox", false, false, amqp.Publishing{
-		ContentType: "text/plain",
+		ContentType:   "text/plain",
 		CorrelationId: "f00b4r",
 		Headers: map[string]interface{}{
 			"foo": "bar",

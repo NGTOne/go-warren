@@ -1,17 +1,17 @@
 package amqp_0_9_1_test
 
-import(
-	"github.com/NGTOne/warren/conn/amqp_0_9_1"
+import (
 	warren_conn "github.com/NGTOne/warren/conn"
+	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 
 	"github.com/streadway/amqp"
 
-	"testing"
 	"errors"
+	"github.com/NGTOne/warren/test_mocks"
+	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
-	"github.com/NGTOne/warren/test_mocks"
+	"testing"
 )
 
 func TestNewConnSuccess(t *testing.T) {
@@ -158,10 +158,10 @@ func TestListenMissingQueue(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-        mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
 
-        mockConn.EXPECT().Channel().Return(mockChan, nil)
-        mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
 
 	conn, _ := amqp_0_9_1.NewConn(mockConn)
 
@@ -177,10 +177,10 @@ func TestConsumeError(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-        mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
 
-        mockConn.EXPECT().Channel().Return(mockChan, nil)
-        mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
 	mockChan.EXPECT().QueueDeclare(
 		"foo_queue",
 		true,

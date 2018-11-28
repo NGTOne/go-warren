@@ -54,7 +54,7 @@ type AMQPChan interface {
 type connection struct {
 	qConn AMQPConn
 	qChan AMQPChan
-	queue    string
+	queue string
 }
 
 func NewConn(qConn AMQPConn) (*connection, error) {
@@ -134,7 +134,7 @@ func (c *connection) SendResponse(
 	response conn.Message,
 ) error {
 	corrID, err := original.GetHeaderValue("CorrelationId")
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 	if _, ok := corrID.(string); !ok {
@@ -142,7 +142,7 @@ func (c *connection) SendResponse(
 	}
 
 	replyTo, err := original.GetHeaderValue("ReplyTo")
-	if (err != nil) {
+	if err != nil {
 		return err
 	}
 	if _, ok := replyTo.(string); !ok {
@@ -155,10 +155,10 @@ func (c *connection) SendResponse(
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: "text/plain",
+			ContentType:   "text/plain",
 			CorrelationId: corrID.(string),
-			Headers: response.GetAllHeaders(),
-			Body: response.GetBody(),
+			Headers:       response.GetAllHeaders(),
+			Body:          response.GetBody(),
 		},
 	)
 }
