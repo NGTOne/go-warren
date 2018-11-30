@@ -10,12 +10,6 @@ type message struct {
 	inner amqp.Delivery
 }
 
-func newMessage(d amqp.Delivery) message {
-	return message{
-		inner: d,
-	}
-}
-
 func (m message) GetBody() []byte {
 	return m.inner.Body
 }
