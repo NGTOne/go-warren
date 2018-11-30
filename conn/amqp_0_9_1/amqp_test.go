@@ -246,7 +246,7 @@ func TestListen(t *testing.T) {
 	doneChan := make(chan bool)
 
 	go func() {
-		err := conn.Listen(func (m warren_conn.Message) {})
+		err := conn.Listen(func(m warren_conn.Message) {})
 
 		assert.Equal(t, nil, err)
 

@@ -56,9 +56,9 @@ type connection struct {
 	qChan AMQPChan
 	queue string
 
-	forever chan(bool)
-	disconnect chan(bool)
-	msgChan <-chan(amqp.Delivery)
+	forever    chan (bool)
+	disconnect chan (bool)
+	msgChan    <-chan (amqp.Delivery)
 }
 
 func NewConn(qConn AMQPConn) (*connection, error) {
