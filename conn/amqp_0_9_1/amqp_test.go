@@ -4,8 +4,6 @@ import (
 	warren_conn "github.com/NGTOne/warren/conn"
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 
-	"fmt"
-
 	"github.com/streadway/amqp"
 
 	"errors"
@@ -256,10 +254,7 @@ func TestListen(t *testing.T) {
 	}()
 
 	msgChan <- amqp.Delivery{}
-	fmt.Println("Sent a message (we hope)")
 	conn.Disconnect()
-	fmt.Println("Disconnected")
 
 	<-doneChan
-	fmt.Println("Done")
 }
