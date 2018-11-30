@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"time"
 	"testing"
+	"errors"
 )
 
 func TestGetBody(t *testing.T) {
@@ -63,4 +64,22 @@ func TestGetHeaderValue(t *testing.T) {
 			assert.Equal(t, tt.result, result)
 		})
 	}
+}
+
+func TestGetHeaderValueMissingHeader(t *testing.T) {
+	m := message{
+		inner: amqp.Delivery{
+			Headers: map[string]interface{}{
+				"some_header": 123,
+			},
+		},
+	}
+
+	_, err := m.GetHeaderValue("some_other_header")
+
+	assert.Equal(
+		t,
+		errors.New("Header \"some_other_header\" not found"),
+		err,
+	)
 }
