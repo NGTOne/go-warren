@@ -5,7 +5,6 @@ import (
 
 	"errors"
 	"github.com/NGTOne/warren/test_mocks"
-	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
 	"github.com/golang/mock/gomock"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
@@ -18,8 +17,8 @@ func TestSendResponseSuccess(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockRes := test_mocks.NewMockMessage(mockCtrl)
 
@@ -56,8 +55,8 @@ func TestNoCorrID(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockRes := test_mocks.NewMockMessage(mockCtrl)
 
@@ -80,8 +79,8 @@ func TestNonStringCorrID(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockRes := test_mocks.NewMockMessage(mockCtrl)
 
@@ -101,8 +100,8 @@ func TestNoReplyTo(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockRes := test_mocks.NewMockMessage(mockCtrl)
 
@@ -126,8 +125,8 @@ func TestNonStringReplyTo(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 	mockMsg := test_mocks.NewMockMessage(mockCtrl)
 	mockRes := test_mocks.NewMockMessage(mockCtrl)
 

@@ -4,7 +4,6 @@ import (
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 
 	"errors"
-	q_test_mocks "github.com/NGTOne/warren/test_mocks/conn/amqp_0_9_1"
 	"github.com/golang/mock/gomock"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
@@ -16,8 +15,8 @@ func TestTargetQueueSuccess(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 
 	mockConn.EXPECT().Channel().Return(mockChan, nil)
 	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
@@ -42,8 +41,8 @@ func TestTargetQueueFailure(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 
 	mockConn.EXPECT().Channel().Return(mockChan, nil)
 	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
@@ -68,8 +67,8 @@ func TestCreateAndBindSuccess(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 
 	mockConn.EXPECT().Channel().Return(mockChan, nil)
 	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
@@ -111,8 +110,8 @@ func TestCreateAndBindNoQueue(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 
 	mockConn.EXPECT().Channel().Return(mockChan, nil)
 	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
@@ -131,8 +130,8 @@ func TestCreateAndBindExchangeDeclareFail(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 
 	mockConn.EXPECT().Channel().Return(mockChan, nil)
 	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
@@ -167,8 +166,8 @@ func TestCreateAndBindQueueBindFailure(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
-	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+	mockChan := NewMockAMQPChan(mockCtrl)
+	mockConn := NewMockAMQPConn(mockCtrl)
 
 	mockConn.EXPECT().Channel().Return(mockChan, nil)
 	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
