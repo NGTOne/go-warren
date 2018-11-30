@@ -83,3 +83,41 @@ func TestGetHeaderValueMissingHeader(t *testing.T) {
 		err,
 	)
 }
+
+func TestGetAllHeaders(t *testing.T) {
+	m := message{
+		inner: amqp.Delivery{
+			ContentType: "text/json",
+			ContentEncoding: "base64",
+			DeliveryMode: 1,
+			Priority: 1,
+			CorrelationId: "f00b4r",
+			ReplyTo: "somewhere",
+			Expiration: "It's gonna expire",
+			MessageId: "Something",
+			Timestamp: time.Unix(100, 0),
+			Type: "Some type",
+			UserId: "Someone",
+			AppId: "An app",
+			Headers: map[string]interface{}{
+				"some_header": 123,
+			},
+		},
+	}
+
+	assert.Equal(t, map[string]interface{}{
+		"ContentType": "text/json",
+		"ContentEncoding": "base64",
+		"DeliveryMode": uint8(1),
+		"Priority": uint8(1),
+		"CorrelationId": "f00b4r",
+		"ReplyTo": "somewhere",
+		"Expiration": "It's gonna expire",
+		"MessageId": "Something",
+		"Timestamp": time.Unix(100, 0),
+		"Type": "Some type",
+		"UserId": "Someone",
+		"AppId": "An app",
+		"some_header": 123,
+	}, m.GetAllHeaders())
+}
