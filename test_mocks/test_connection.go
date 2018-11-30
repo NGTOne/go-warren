@@ -32,10 +32,6 @@ func NewTestConnection(
 	return mock
 }
 
-func (m *TestConnection) SetNewMsgCallback(f func(conn.Message)) {
-	m.callback = f
-}
-
 // Borrowed from gomock's generated code
 func (m *TestConnection) EXPECT() *TestConnectionMockRecorder {
 	return m.recorder
