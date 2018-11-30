@@ -55,6 +55,10 @@ type connection struct {
 	qConn AMQPConn
 	qChan AMQPChan
 	queue string
+
+	forever chan(bool)
+	disconnect chan(bool)
+	msgChan <-chan(amqp.Delivery)
 }
 
 func NewConn(qConn AMQPConn) (*connection, error) {
@@ -71,6 +75,9 @@ func NewConn(qConn AMQPConn) (*connection, error) {
 	return &connection{
 		qConn: qConn,
 		qChan: qChan,
+
+		forever: nil,
+		msgChan: nil,
 	}, nil
 }
 
@@ -115,16 +122,23 @@ func (c *connection) Listen(f func(conn.Message)) error {
 		return err
 	}
 
-	forever := make(chan bool)
+	c.forever = make(chan bool)
+	c.disconnect = make(chan bool)
+	c.msgChan = msgs
 	defer c.qChan.Close()
 
 	go func() {
-		for d := range msgs {
-			f(message{inner: d})
+		for {
+			select {
+			case d := <-c.msgChan:
+				f(message{inner: d})
+			case <-c.disconnect:
+				return
+			}
 		}
 	}()
 
-	<-forever
+	<-c.forever
 
 	return nil
 }
@@ -161,4 +175,9 @@ func (c *connection) SendResponse(
 			Body:          response.GetBody(),
 		},
 	)
+}
+
+func (c *connection) Disconnect() {
+	c.disconnect <- true
+	c.forever <- true
 }

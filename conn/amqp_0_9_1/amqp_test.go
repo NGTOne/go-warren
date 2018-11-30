@@ -4,6 +4,8 @@ import (
 	warren_conn "github.com/NGTOne/warren/conn"
 	"github.com/NGTOne/warren/conn/amqp_0_9_1"
 
+	"fmt"
+
 	"github.com/streadway/amqp"
 
 	"errors"
@@ -206,4 +208,58 @@ func TestConsumeError(t *testing.T) {
 	err := conn.Listen(func(m warren_conn.Message) {})
 
 	assert.Equal(t, errors.New("Something went wrong!"), err)
+}
+
+func TestListen(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockChan := q_test_mocks.NewMockAMQPChan(mockCtrl)
+	mockConn := q_test_mocks.NewMockAMQPConn(mockCtrl)
+
+	mockConn.EXPECT().Channel().Return(mockChan, nil)
+	mockChan.EXPECT().Qos(1, 0, false).Return(nil)
+	mockChan.EXPECT().QueueDeclare(
+		"foo_queue",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	).Return(amqp.Queue{}, nil)
+
+	conn, _ := amqp_0_9_1.NewConn(mockConn)
+	conn.SetTargetQueue("foo_queue")
+
+	msgChan := make(chan amqp.Delivery)
+
+	mockChan.EXPECT().Consume(
+		"foo_queue",
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	).Return(msgChan, nil)
+
+	mockChan.EXPECT().Close()
+
+	doneChan := make(chan bool)
+
+	go func() {
+		err := conn.Listen(func (m warren_conn.Message) {})
+
+		assert.Equal(t, nil, err)
+
+		doneChan <- true
+	}()
+
+	msgChan <- amqp.Delivery{}
+	fmt.Println("Sent a message (we hope)")
+	conn.Disconnect()
+	fmt.Println("Disconnected")
+
+	<-doneChan
+	fmt.Println("Done")
 }
