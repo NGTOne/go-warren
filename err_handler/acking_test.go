@@ -2,7 +2,6 @@ package err_handler_test
 
 import (
 	"github.com/NGTOne/warren/err_handler"
-	"github.com/NGTOne/warren/test_mocks"
 
 	"errors"
 	"github.com/golang/mock/gomock"
@@ -14,8 +13,8 @@ func TestAckingHandler(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockMsg := test_mocks.NewMockMessage(mockCtrl)
-	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
+	mockMsg := NewMockMessage(mockCtrl)
+	mockConn := NewMockConnection(mockCtrl)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
