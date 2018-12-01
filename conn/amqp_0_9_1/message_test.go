@@ -1,11 +1,11 @@
 package amqp_0_9_1
 
 import (
+	"errors"
 	"github.com/streadway/amqp"
 	"github.com/stretchr/testify/assert"
-	"time"
 	"testing"
-	"errors"
+	"time"
 )
 
 func TestGetBody(t *testing.T) {
@@ -21,25 +21,25 @@ func TestGetBody(t *testing.T) {
 func TestGetHeaderValue(t *testing.T) {
 	m := message{
 		inner: amqp.Delivery{
-			ContentType: "text/json",
+			ContentType:     "text/json",
 			ContentEncoding: "base64",
-			DeliveryMode: 1,
-			Priority: 1,
-			CorrelationId: "f00b4r",
-			ReplyTo: "somewhere",
-			Expiration: "It's gonna expire",
-			MessageId: "Something",
-			Timestamp: time.Unix(100, 0),
-			Type: "Some type",
-			UserId: "Someone",
-			AppId: "An app",
+			DeliveryMode:    1,
+			Priority:        1,
+			CorrelationId:   "f00b4r",
+			ReplyTo:         "somewhere",
+			Expiration:      "It's gonna expire",
+			MessageId:       "Something",
+			Timestamp:       time.Unix(100, 0),
+			Type:            "Some type",
+			UserId:          "Someone",
+			AppId:           "An app",
 			Headers: map[string]interface{}{
 				"some_header": 123,
 			},
 		},
 	}
 
-	tests := []struct{
+	tests := []struct {
 		header string
 		result interface{}
 	}{
@@ -59,7 +59,7 @@ func TestGetHeaderValue(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.header, func (t *testing.T) {
+		t.Run(tt.header, func(t *testing.T) {
 			result, _ := m.GetHeaderValue(tt.header)
 			assert.Equal(t, tt.result, result)
 		})
@@ -87,18 +87,18 @@ func TestGetHeaderValueMissingHeader(t *testing.T) {
 func TestGetAllHeaders(t *testing.T) {
 	m := message{
 		inner: amqp.Delivery{
-			ContentType: "text/json",
+			ContentType:     "text/json",
 			ContentEncoding: "base64",
-			DeliveryMode: 1,
-			Priority: 1,
-			CorrelationId: "f00b4r",
-			ReplyTo: "somewhere",
-			Expiration: "It's gonna expire",
-			MessageId: "Something",
-			Timestamp: time.Unix(100, 0),
-			Type: "Some type",
-			UserId: "Someone",
-			AppId: "An app",
+			DeliveryMode:    1,
+			Priority:        1,
+			CorrelationId:   "f00b4r",
+			ReplyTo:         "somewhere",
+			Expiration:      "It's gonna expire",
+			MessageId:       "Something",
+			Timestamp:       time.Unix(100, 0),
+			Type:            "Some type",
+			UserId:          "Someone",
+			AppId:           "An app",
 			Headers: map[string]interface{}{
 				"some_header": 123,
 			},
@@ -106,18 +106,18 @@ func TestGetAllHeaders(t *testing.T) {
 	}
 
 	assert.Equal(t, map[string]interface{}{
-		"ContentType": "text/json",
+		"ContentType":     "text/json",
 		"ContentEncoding": "base64",
-		"DeliveryMode": uint8(1),
-		"Priority": uint8(1),
-		"CorrelationId": "f00b4r",
-		"ReplyTo": "somewhere",
-		"Expiration": "It's gonna expire",
-		"MessageId": "Something",
-		"Timestamp": time.Unix(100, 0),
-		"Type": "Some type",
-		"UserId": "Someone",
-		"AppId": "An app",
-		"some_header": 123,
+		"DeliveryMode":    uint8(1),
+		"Priority":        uint8(1),
+		"CorrelationId":   "f00b4r",
+		"ReplyTo":         "somewhere",
+		"Expiration":      "It's gonna expire",
+		"MessageId":       "Something",
+		"Timestamp":       time.Unix(100, 0),
+		"Type":            "Some type",
+		"UserId":          "Someone",
+		"AppId":           "An app",
+		"some_header":     123,
 	}, m.GetAllHeaders())
 }

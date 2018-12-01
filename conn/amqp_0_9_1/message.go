@@ -18,7 +18,7 @@ func (m message) GetBody() []byte {
 // recursive, but I'm not sure how best to deal with it for now
 func (m message) GetHeaderValue(headerName string) (interface{}, error) {
 	// A few special cases for the message properties themselves
-	switch(headerName) {
+	switch headerName {
 	case "ContentType":
 		return m.inner.ContentType, nil
 	case "ContentEncoding":
