@@ -1,7 +1,7 @@
-package service_test
+package warren_test
 
 import (
-	"github.com/NGTOne/warren/service"
+	"github.com/NGTOne/warren"
 	"github.com/NGTOne/warren/test_mocks"
 
 	"github.com/golang/mock/gomock"
@@ -21,7 +21,7 @@ func TestSuccessfulAsync(t *testing.T) {
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")
 
 	con.Listen()
@@ -42,7 +42,7 @@ func TestSuccessfulSync(t *testing.T) {
 	mockConn.EXPECT().SendResponse(mockMsg, mockReply).Return(nil)
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.AddSyncAction(mockAction, "foo")
 
 	con.Listen()

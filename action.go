@@ -1,4 +1,4 @@
-package service
+package warren
 
 import (
 	"github.com/NGTOne/warren/conn"

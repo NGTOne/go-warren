@@ -1,7 +1,7 @@
-package service_test
+package warren_test
 
 import (
-	"github.com/NGTOne/warren/service"
+	"github.com/NGTOne/warren"
 	"github.com/NGTOne/warren/test_mocks"
 
 	"errors"
@@ -24,7 +24,7 @@ func TestMissingActionHeader(t *testing.T) {
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.Listen()
 }
 
@@ -39,7 +39,7 @@ func TestNonStringActionHeader(t *testing.T) {
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.Listen()
 }
 
@@ -54,7 +54,7 @@ func TestMissingAction(t *testing.T) {
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.Listen()
 }
 
@@ -68,7 +68,7 @@ func TestAttemptingToAddSameAsyncActionTwice(t *testing.T) {
 	first := test_mocks.NewMockAsynchronousAction(mockCtrl)
 	second := test_mocks.NewMockAsynchronousAction(mockCtrl)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	err := con.AddAsyncAction(first, "foo")
 	assert.Equal(t, nil, err)
 
@@ -90,7 +90,7 @@ func TestAttemptingToAddSameSyncActionTwice(t *testing.T) {
 	first := test_mocks.NewMockSynchronousAction(mockCtrl)
 	second := test_mocks.NewMockSynchronousAction(mockCtrl)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	err := con.AddSyncAction(first, "foo")
 	assert.Equal(t, nil, err)
 

@@ -1,7 +1,7 @@
-package service_test
+package warren_test
 
 import (
-	"github.com/NGTOne/warren/service"
+	"github.com/NGTOne/warren"
 	"github.com/NGTOne/warren/test_mocks"
 
 	"errors"
@@ -22,7 +22,7 @@ func TestDifferentActionHeader(t *testing.T) {
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")
 	con.SetActionHeader("foobar")
 
@@ -45,7 +45,7 @@ func TestDifferentProcessHandler(t *testing.T) {
 	mockHandler := test_mocks.NewMockErrHandler(mockCtrl)
 	mockHandler.EXPECT().ProcessErr(mockMsg, err).Return(err)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.AddAsyncAction(mockAction, "foo")
 	con.SetProcessErrHandler(mockHandler)
 
@@ -70,7 +70,7 @@ func TestDifferentReplyHandler(t *testing.T) {
 
 	mockConn.EXPECT().SendResponse(mockMsg, mockMsg).Return(err)
 
-	con := service.NewConsumer(mockConn)
+	con := warren.NewConsumer(mockConn)
 	con.AddSyncAction(mockAction, "foo")
 	con.SetReplyErrHandler(mockHandler)
 
