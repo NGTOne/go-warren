@@ -2,6 +2,7 @@ package err_handler_test
 
 import (
 	"github.com/NGTOne/warren/err_handler"
+	"github.com/NGTOne/warren/test_mocks"
 
 	"errors"
 	"github.com/golang/mock/gomock"
@@ -13,8 +14,8 @@ func TestCompositionalHandler(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockMsg := NewMockMessage(mockCtrl)
-	mockConn := NewMockConnection(mockCtrl)
+	mockMsg := test_mocks.NewMockMessage(mockCtrl)
+	mockConn := test_mocks.NewTestConnection(mockMsg, mockCtrl)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
 	mockConn.EXPECT().NackMsg(mockMsg).Return(nil)
