@@ -1,6 +1,6 @@
 package sig_handler
 
-import(
+import (
 	"os"
 )
 

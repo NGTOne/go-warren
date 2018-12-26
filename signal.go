@@ -1,26 +1,26 @@
 package warren
 
-import(
+import (
+	"github.com/NGTOne/warren/sig_handler"
 	"os"
 	"os/signal"
-	"github.com/NGTOne/warren/sig_handler"
 )
 
 type signalProcessor struct {
-	handler		sig_handler.SignalHandler
-	caughtSignals	[]os.Signal
-	catcher		chan os.Signal
-	handlingSignals	bool
-	shutdown	chan bool
+	handler         sig_handler.SignalHandler
+	caughtSignals   []os.Signal
+	catcher         chan os.Signal
+	handlingSignals bool
+	shutdown        chan bool
 }
 
 func newProcessor() *signalProcessor {
 	p := &signalProcessor{
-		handler:		nil,
-		caughtSignals:		[]os.Signal{},
-		catcher:		make(chan os.Signal),
-		handlingSignals:	false,
-		shutdown:		make(chan bool),
+		handler:         nil,
+		caughtSignals:   []os.Signal{},
+		catcher:         make(chan os.Signal),
+		handlingSignals: false,
+		shutdown:        make(chan bool),
 	}
 
 	go func() {
@@ -40,7 +40,7 @@ func newProcessor() *signalProcessor {
 			case <-p.shutdown:
 				return
 			default:
-				if (p.handlingSignals) {
+				if p.handlingSignals {
 					p.processSignals()
 				}
 			}
@@ -50,7 +50,7 @@ func newProcessor() *signalProcessor {
 	return p
 }
 
-func (p *signalProcessor) setHandler (handler sig_handler.SignalHandler) {
+func (p *signalProcessor) setHandler(handler sig_handler.SignalHandler) {
 	p.handler = handler
 }
 
