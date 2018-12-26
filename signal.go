@@ -39,7 +39,7 @@ func (p *signalProcessor) setTargetSignals(signals []os.Signal) {
 	p.targetSignals = signals
 }
 
-func (p *signalProcessor) enable() {
+func (p *signalProcessor) holdSignals() {
 	signal.Notify(p.catcher, p.targetSignals...)
 }
 
@@ -47,6 +47,6 @@ func (p *signalProcessor) processSignals() {
 	p.handler.HandleSignals(p.caughtSignals)
 }
 
-func (p *signalProcessor) disable() {
+func (p *signalProcessor) stopHoldingSignals() {
 	signal.Stop(p.catcher)
 }
