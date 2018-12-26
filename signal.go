@@ -14,7 +14,7 @@ type signalProcessor struct {
 	shutdown        chan bool
 }
 
-func newProcessor() *signalProcessor {
+func newSignalProcessor() *signalProcessor {
 	p := &signalProcessor{
 		handler:         nil,
 		caughtSignals:   []os.Signal{},
