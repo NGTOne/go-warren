@@ -11,6 +11,7 @@ type signalProcessor struct {
 	caughtSignals	[]os.Signal
 	catcher		chan os.Signal
 	handlingSignals	bool
+	shutdown	chan bool
 }
 
 func newProcessor() *signalProcessor {
@@ -19,19 +20,29 @@ func newProcessor() *signalProcessor {
 		caughtSignals:		[]os.Signal{},
 		catcher:		make(chan os.Signal),
 		handlingSignals:	false,
+		shutdown:		make(chan bool),
 	}
 
 	go func() {
 		for {
-			sig := <-p.catcher
-			p.caughtSignals = append(p.caughtSignals, sig)
+			select {
+			case sig := <-p.catcher:
+				p.caughtSignals = append(p.caughtSignals, sig)
+			case <-p.shutdown:
+				return
+			}
 		}
 	}()
 
 	go func() {
 		for {
-			if (p.handlingSignals && len(p.caughtSignals) > 0) {
-				p.processSignals()
+			select {
+			case <-p.shutdown:
+				return
+			default:
+				if (p.handlingSignals) {
+					p.processSignals()
+				}
 			}
 		}
 	}()
@@ -58,4 +69,8 @@ func (p *signalProcessor) processSignals() {
 
 func (p *signalProcessor) stopHoldingSignals() {
 	p.handlingSignals = true
+}
+
+func (p *signalProcessor) shutDown() {
+	p.shutdown <- true
 }
