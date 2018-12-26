@@ -8,7 +8,6 @@ import(
 
 type signalProcessor struct {
 	handler		sig_handler.SignalHandler
-	targetSignals	[]os.Signal
 	caughtSignals	[]os.Signal
 	catcher		chan os.Signal
 	handlingSignals	bool
@@ -17,13 +16,10 @@ type signalProcessor struct {
 func newProcessor() *signalProcessor {
 	p := &signalProcessor{
 		handler:		nil,
-		targetSignals:		[]os.Signal{},
 		caughtSignals:		[]os.Signal{},
 		catcher:		make(chan os.Signal),
 		handlingSignals:	false,
 	}
-
-	signal.Notify(p.catcher, p.targetSignals...)
 
 	go func() {
 		for {
@@ -48,7 +44,8 @@ func (p *signalProcessor) setHandler (handler sig_handler.SignalHandler) {
 }
 
 func (p *signalProcessor) setTargetSignals(signals []os.Signal) {
-	p.targetSignals = signals
+	signal.Stop(p.catcher)
+	signal.Notify(p.catcher, signals...)
 }
 
 func (p *signalProcessor) holdSignals() {
