@@ -11,20 +11,32 @@ type signalProcessor struct {
 	targetSignals	[]os.Signal
 	caughtSignals	[]os.Signal
 	catcher		chan os.Signal
+	handlingSignals	bool
 }
 
 func newProcessor() *signalProcessor {
 	p := &signalProcessor{
-		handler:	nil,
-		targetSignals:	[]os.Signal{},
-		caughtSignals:	[]os.Signal{},
-		catcher:	make(chan os.Signal),
+		handler:		nil,
+		targetSignals:		[]os.Signal{},
+		caughtSignals:		[]os.Signal{},
+		catcher:		make(chan os.Signal),
+		handlingSignals:	false,
 	}
+
+	signal.Notify(p.catcher, p.targetSignals...)
 
 	go func() {
 		for {
 			sig := <-p.catcher
 			p.caughtSignals = append(p.caughtSignals, sig)
+		}
+	}()
+
+	go func() {
+		for {
+			if (p.handlingSignals && len(p.caughtSignals) > 0) {
+				p.processSignals()
+			}
 		}
 	}()
 
@@ -40,7 +52,7 @@ func (p *signalProcessor) setTargetSignals(signals []os.Signal) {
 }
 
 func (p *signalProcessor) holdSignals() {
-	signal.Notify(p.catcher, p.targetSignals...)
+	p.handlingSignals = false
 }
 
 func (p *signalProcessor) processSignals() {
@@ -48,5 +60,5 @@ func (p *signalProcessor) processSignals() {
 }
 
 func (p *signalProcessor) stopHoldingSignals() {
-	signal.Stop(p.catcher)
+	p.handlingSignals = true
 }
