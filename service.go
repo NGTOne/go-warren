@@ -1,23 +1,34 @@
 package warren
 
 import (
+	"os"
+	"syscall"
 	"errors"
 	"github.com/NGTOne/warren/conn"
 	"github.com/NGTOne/warren/err_handler"
+	"github.com/NGTOne/warren/sig_handler"
 	"strings"
 )
 
 type consumer struct {
-	conn         conn.Connection
-	actionHeader string
-	syncActions  map[string]SynchronousAction
-	asyncActions map[string]AsynchronousAction
+	conn		conn.Connection
+	actionHeader	string
+	syncActions	map[string]SynchronousAction
+	asyncActions	map[string]AsynchronousAction
 
+	sigProcessor      *signalProcessor
 	processErrHandler err_handler.ErrHandler
 	replyErrHandler   err_handler.ErrHandler
 }
 
 func NewConsumer(conn conn.Connection) *consumer {
+	sigProcessor := newSignalProcessor(sig_handler.NewPanickingHandler(
+		map[os.Signal]string{
+			syscall.SIGINT:  "Caught SIGINT",
+			syscall.SIGTERM: "Caught SIGTERM",
+		},
+	))
+
 	return &consumer{
 		conn:              conn,
 		actionHeader:      "action",
@@ -25,6 +36,7 @@ func NewConsumer(conn conn.Connection) *consumer {
 		replyErrHandler:   err_handler.NewAckingHandler(conn),
 		syncActions:       make(map[string]SynchronousAction),
 		asyncActions:      make(map[string]AsynchronousAction),
+		sigProcessor:      sigProcessor,
 	}
 }
 
@@ -97,6 +109,8 @@ func (con *consumer) Listen() error {
 }
 
 func (con *consumer) processMsg(msg conn.Message) {
+	con.sigProcessor.holdSignals()
+
 	action, err := msg.GetHeaderValue(con.actionHeader)
 
 	if err != nil {
@@ -149,4 +163,5 @@ func (con *consumer) processMsg(msg conn.Message) {
 		con.replyErrHandler.ProcessErr(msg, err)
 		return
 	}
+	con.sigProcessor.stopHoldingSignals()
 }
