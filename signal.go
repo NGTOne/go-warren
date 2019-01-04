@@ -17,12 +17,12 @@ type signalProcessor struct {
 	shutdown        chan bool
 }
 
-func newSignalProcessor() *signalProcessor {
+func newSignalProcessor(handler signalHandler) *signalProcessor {
 	p := &signalProcessor{
-		handler:         nil,
+		handler:         handler,
 		caughtSignals:   []os.Signal{},
 		catcher:         make(chan os.Signal),
-		handlingSignals: false,
+		handlingSignals: true,
 		shutdown:        make(chan bool),
 	}
 
