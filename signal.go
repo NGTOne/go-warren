@@ -1,13 +1,16 @@
 package warren
 
 import (
-	"github.com/NGTOne/warren/sig_handler"
 	"os"
 	"os/signal"
 )
 
+type signalHandler interface {
+	handleSignals(sigs []os.Signal)
+}
+
 type signalProcessor struct {
-	handler         sig_handler.SignalHandler
+	handler         signalHandler
 	caughtSignals   []os.Signal
 	catcher         chan os.Signal
 	handlingSignals bool
@@ -50,7 +53,7 @@ func newSignalProcessor() *signalProcessor {
 	return p
 }
 
-func (p *signalProcessor) setHandler(handler sig_handler.SignalHandler) {
+func (p *signalProcessor) setHandler(handler signalHandler) {
 	p.handler = handler
 }
 
@@ -64,7 +67,7 @@ func (p *signalProcessor) holdSignals() {
 }
 
 func (p *signalProcessor) processSignals() {
-	p.handler.HandleSignals(p.caughtSignals)
+	p.handler.handleSignals(p.caughtSignals)
 }
 
 func (p *signalProcessor) stopHoldingSignals() {
