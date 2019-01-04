@@ -14,7 +14,7 @@ func NewPanickingHandler(panicMsgs map[os.Signal]string) panickingHandler {
 	}
 }
 
-func (h panickingHandler) handleSignals(sigs []os.Signal) {
+func (h panickingHandler) HandleSignals(sigs []os.Signal) {
 	for _, sig := range sigs {
 		if msg, ok := h.panicMsgs[sig]; ok {
 			panic(msg)

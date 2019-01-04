@@ -6,7 +6,7 @@ import (
 )
 
 type signalHandler interface {
-	handleSignals(sigs []os.Signal)
+	HandleSignals(sigs []os.Signal)
 }
 
 type signalProcessor struct {
@@ -67,7 +67,7 @@ func (p *signalProcessor) holdSignals() {
 }
 
 func (p *signalProcessor) processSignals() {
-	p.handler.handleSignals(p.caughtSignals)
+	p.handler.HandleSignals(p.caughtSignals)
 }
 
 func (p *signalProcessor) stopHoldingSignals() {
