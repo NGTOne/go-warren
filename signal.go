@@ -101,5 +101,10 @@ func (p *signalProcessor) stopHoldingSignals() {
 }
 
 func (p *signalProcessor) shutDown() {
-	p.shutdown <- true
+	select {
+	case p.shutdown <- true:
+		// We're shutting down for real
+	default:
+		// We've already shut down; nothing to do here
+	}
 }
