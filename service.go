@@ -22,22 +22,23 @@ type consumer struct {
 }
 
 func NewConsumer(conn conn.Connection) *consumer {
-	sigProcessor := newSignalProcessor(sig_handler.NewPanickingHandler(
-		map[os.Signal]string{
-			syscall.SIGINT:  "Caught SIGINT",
-			syscall.SIGTERM: "Caught SIGTERM",
-		},
-	))
-
-	return &consumer{
+	c := &consumer{
 		conn:              conn,
 		actionHeader:      "action",
 		processErrHandler: err_handler.NewAckingHandler(conn),
 		replyErrHandler:   err_handler.NewAckingHandler(conn),
 		syncActions:       make(map[string]SynchronousAction),
 		asyncActions:      make(map[string]AsynchronousAction),
-		sigProcessor:      sigProcessor,
 	}
+
+	sigProcessor := newSignalProcessor(sig_handler.NewShuttingDownHandler(
+		[]os.Signal{syscall.SIGINT, syscall.SIGTERM},
+		c,
+	))
+
+	c.sigProcessor = sigProcessor
+
+	return c
 }
 
 func (con *consumer) SetActionHeader(header string) {
