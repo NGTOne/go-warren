@@ -32,23 +32,12 @@ func newSignalProcessor(handler signalHandler) *signalProcessor {
 			select {
 			case sig := <-p.catcher:
 				p.caughtSignals = append(p.caughtSignals, sig)
-			case <-p.shutdown:
-				signal.Stop(p.catcher)
-				return
-			}
-		}
-	}()
-
-	go func() {
-		for {
-			select {
-			case <-p.shutdown:
-				signal.Stop(p.catcher)
-				return
-			default:
-				if p.handlingSignals {
+				if (p.handlingSignals) {
 					p.processSignals()
 				}
+			case <-p.shutdown:
+				signal.Stop(p.catcher)
+				return
 			}
 		}
 	}()
