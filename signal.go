@@ -50,12 +50,49 @@ func newSignalProcessor(handler signalHandler) *signalProcessor {
 		}
 	}()
 
-	return p
-}
-
-func (p *signalProcessor) setTargetSignals(signals []os.Signal) {
+	// We'll catch as many signals as we can, and let the handler decide
+	// which ones it wants to deal with and which ones it wants to ignore
 	signal.Stop(p.catcher)
-	signal.Notify(p.catcher, signals...)
+	signal.Notify(
+		p.catcher,
+		syscall.SIGABRT,
+		syscall.SIGALRM,
+		syscall.SIGBUS,
+		syscall.SIGCHLD,
+		syscall.SIGCLD,
+		syscall.SIGCONT,
+		syscall.SIGFPE,
+		syscall.SIGHUP,
+		syscall.SIGILL,
+		syscall.SIGINT,
+		syscall.SIGIO,
+		syscall.SIGIOT,
+		syscall.SIGKILL,
+		syscall.SIGPIPE,
+		syscall.SIGPOLL,
+		syscall.SIGPROF,
+		syscall.SIGPWR,
+		syscall.SIGQUIT,
+		syscall.SIGSEGV,
+		syscall.SIGSTKFLT,
+		syscall.SIGSTOP,
+		syscall.SIGSYS,
+		syscall.SIGTERM,
+		syscall.SIGTRAP,
+		syscall.SIGTSTP,
+		syscall.SIGTTIN,
+		syscall.SIGTTOU,
+		syscall.SIGUNUSED,
+		syscall.SIGURG,
+		syscall.SIGUSR1,
+		syscall.SIGUSR2,
+		syscall.SIGVTALRM,
+		syscall.SIGWINCH,
+		syscall.SIGXCPU,
+		syscall.SIGXFSZ,
+	)
+
+	return p
 }
 
 func (p *signalProcessor) holdSignals() {
@@ -64,6 +101,7 @@ func (p *signalProcessor) holdSignals() {
 
 func (p *signalProcessor) processSignals() {
 	p.handler.HandleSignals(p.caughtSignals)
+	p.caughtSignals = []os.Signal{}
 }
 
 func (p *signalProcessor) stopHoldingSignals() {
