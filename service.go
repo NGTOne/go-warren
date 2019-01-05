@@ -56,6 +56,14 @@ func (con *consumer) SetReplyErrHandler(
 	con.replyErrHandler = handler
 }
 
+func (con *consumer) SetSignalHandler(
+	handler signalHandler,
+	targets []os.Signal,
+) {
+	con.sigProcessor.handler = handler
+	con.sigProcessor.setTargetSignals(targets)
+}
+
 func (con *consumer) actionAlreadyExists(name string) error {
 	if _, alreadyPresent := con.asyncActions[name]; alreadyPresent {
 		return errors.New(strings.Join([]string{

@@ -53,10 +53,6 @@ func newSignalProcessor(handler signalHandler) *signalProcessor {
 	return p
 }
 
-func (p *signalProcessor) setHandler(handler signalHandler) {
-	p.handler = handler
-}
-
 func (p *signalProcessor) setTargetSignals(signals []os.Signal) {
 	signal.Stop(p.catcher)
 	signal.Notify(p.catcher, signals...)
