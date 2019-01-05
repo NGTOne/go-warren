@@ -21,8 +21,10 @@ func TestDifferentActionHeader(t *testing.T) {
 	mockAction.EXPECT().Process(mockMsg).Return(nil)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.AddAsyncAction(mockAction, "foo")
 	con.SetActionHeader("foobar")
 
@@ -41,11 +43,13 @@ func TestDifferentProcessHandler(t *testing.T) {
 
 	mockMsg.EXPECT().GetHeaderValue("action").Return("foo", nil)
 	mockAction.EXPECT().Process(mockMsg).Return(err)
+	mockConn.EXPECT().Disconnect()
 
 	mockHandler := test_mocks.NewMockErrHandler(mockCtrl)
 	mockHandler.EXPECT().ProcessErr(mockMsg, err).Return(err)
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.AddAsyncAction(mockAction, "foo")
 	con.SetProcessErrHandler(mockHandler)
 
@@ -69,8 +73,10 @@ func TestDifferentReplyHandler(t *testing.T) {
 	mockHandler.EXPECT().ProcessErr(mockMsg, err).Return(err)
 
 	mockConn.EXPECT().SendResponse(mockMsg, mockMsg).Return(err)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.AddSyncAction(mockAction, "foo")
 	con.SetReplyErrHandler(mockHandler)
 

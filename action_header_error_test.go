@@ -23,8 +23,10 @@ func TestMissingActionHeader(t *testing.T) {
 	)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.Listen()
 }
 
@@ -38,8 +40,10 @@ func TestNonStringActionHeader(t *testing.T) {
 	mockMsg.EXPECT().GetHeaderValue("action").Return(-100, nil)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.Listen()
 }
 
@@ -53,8 +57,10 @@ func TestMissingAction(t *testing.T) {
 	mockMsg.EXPECT().GetHeaderValue("action").Return("foo", nil)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.Listen()
 }
 
@@ -69,6 +75,9 @@ func TestAttemptingToAddSameAsyncActionTwice(t *testing.T) {
 	second := test_mocks.NewMockAsynchronousAction(mockCtrl)
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
+	mockConn.EXPECT().Disconnect()
+
 	err := con.AddAsyncAction(first, "foo")
 	assert.Equal(t, nil, err)
 
@@ -91,6 +100,9 @@ func TestAttemptingToAddSameSyncActionTwice(t *testing.T) {
 	second := test_mocks.NewMockSynchronousAction(mockCtrl)
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
+	mockConn.EXPECT().Disconnect()
+
 	err := con.AddSyncAction(first, "foo")
 	assert.Equal(t, nil, err)
 

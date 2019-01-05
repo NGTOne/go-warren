@@ -23,8 +23,10 @@ func TestUnsuccessfulProcessing(t *testing.T) {
 	)
 
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.AddAsyncAction(mockAction, "foo")
 
 	con.Listen()
@@ -46,8 +48,10 @@ func TestUnsuccessfulReply(t *testing.T) {
 		errors.New("Something went wrong!"),
 	)
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.AddSyncAction(mockAction, "foo")
 
 	con.Listen()
@@ -68,8 +72,10 @@ func TestUnsuccessfulAck(t *testing.T) {
 		errors.New("Something went wrong!"),
 	)
 	mockConn.EXPECT().AckMsg(mockMsg).Return(nil)
+	mockConn.EXPECT().Disconnect()
 
 	con := warren.NewConsumer(mockConn)
+	defer con.ShutDown()
 	con.AddAsyncAction(mockAction, "foo")
 
 	con.Listen()
