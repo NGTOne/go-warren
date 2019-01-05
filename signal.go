@@ -3,6 +3,7 @@ package warren
 import (
 	"os"
 	"os/signal"
+	"syscall"
 )
 
 type signalHandler interface {
