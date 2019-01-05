@@ -169,3 +169,8 @@ func (con *consumer) processMsg(msg conn.Message) {
 	}
 	con.sigProcessor.stopHoldingSignals()
 }
+
+func (con *consumer) ShutDown() {
+	con.conn.Disconnect()
+	con.sigProcessor.shutDown()
+}
