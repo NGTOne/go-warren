@@ -33,6 +33,7 @@ func (h shuttingDownHandler) HandleSignals(signals []os.Signal) {
 	for _, caughtSig := range signals {
 		if _, ok := h.signals[caughtSig]; ok {
 			h.target.ShutDown()
+			return
 		}
 	}
 }
