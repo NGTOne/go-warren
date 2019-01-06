@@ -11,20 +11,22 @@ type signalHandler interface {
 }
 
 type signalProcessor struct {
-	handler         signalHandler
-	caughtSignals   []os.Signal
-	catcher         chan os.Signal
-	handlingSignals bool
-	shutdown        chan bool
+	handler          signalHandler
+	caughtSignals    []os.Signal
+	catcher          chan os.Signal
+	handlingSignals  bool
+	shutdown         chan bool
+	shutdownComplete chan bool
 }
 
 func newSignalProcessor(handler signalHandler) *signalProcessor {
 	p := &signalProcessor{
-		handler:         handler,
-		caughtSignals:   []os.Signal{},
-		catcher:         make(chan os.Signal),
-		handlingSignals: true,
-		shutdown:        make(chan bool),
+		handler:          handler,
+		caughtSignals:    []os.Signal{},
+		catcher:          make(chan os.Signal),
+		handlingSignals:  true,
+		shutdown:         make(chan bool),
+		shutdownComplete: make(chan bool),
 	}
 
 	go func() {
@@ -37,6 +39,7 @@ func newSignalProcessor(handler signalHandler) *signalProcessor {
 				}
 			case <-p.shutdown:
 				signal.Stop(p.catcher)
+				p.shutdownComplete <- true
 				return
 			}
 		}
@@ -104,6 +107,7 @@ func (p *signalProcessor) shutDown() {
 	select {
 	case p.shutdown <- true:
 		// We're shutting down for real
+		<-p.shutdownComplete
 	default:
 		// We've already shut down; nothing to do here
 	}
