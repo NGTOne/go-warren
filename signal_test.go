@@ -22,9 +22,10 @@ func (act signalGeneratingAction) Process(msg conn.Message) error {
 
 func TestDefaultSignalHandler(t *testing.T) {
 	tests := []struct{
-		name		string
-		signal		os.Signal
-		shouldShutdown	bool
+		name	string
+		signal	os.Signal
+
+		shouldShutdownAutomatically bool
 	}{
 		{"SIGINT", syscall.SIGINT, true},
 		{"SIGTERM", syscall.SIGTERM, true},
@@ -53,11 +54,17 @@ func TestDefaultSignalHandler(t *testing.T) {
 			con := warren.NewConsumer(mockConn)
 			con.AddAsyncAction(mockAction, "foo")
 
+			shutdownComplete := con.GetShutdownIndicator()
+
+			mockConn.EXPECT().Disconnect()
+
 			con.Listen()
 
-			if (tt.shouldShutdown) {
-				mockConn.EXPECT().Disconnect()
+			if (!tt.shouldShutdownAutomatically) {
+				con.ShutDown()
 			}
+
+			<-shutdownComplete
 		})
 	}
 }

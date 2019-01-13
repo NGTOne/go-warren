@@ -35,7 +35,7 @@ func newSignalProcessor(handler signalHandler) *signalProcessor {
 			case sig := <-p.catcher:
 				p.caughtSignals = append(p.caughtSignals, sig)
 				if (p.handlingSignals) {
-					p.processSignals()
+					go p.processSignals()
 				}
 			case <-p.shutdown:
 				signal.Stop(p.catcher)

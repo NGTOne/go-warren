@@ -19,6 +19,8 @@ type consumer struct {
 	sigProcessor      *signalProcessor
 	processErrHandler err_handler.ErrHandler
 	replyErrHandler   err_handler.ErrHandler
+
+	shutdown chan bool
 }
 
 func NewConsumer(conn conn.Connection) *consumer {
@@ -29,6 +31,7 @@ func NewConsumer(conn conn.Connection) *consumer {
 		replyErrHandler:   err_handler.NewAckingHandler(conn),
 		syncActions:       make(map[string]SynchronousAction),
 		asyncActions:      make(map[string]AsynchronousAction),
+		shutdown:          make(chan bool),
 	}
 
 	sigProcessor := newSignalProcessor(sig_handler.NewShuttingDownHandler(
@@ -174,4 +177,12 @@ func (con *consumer) processMsg(msg conn.Message) {
 func (con *consumer) ShutDown() {
 	con.conn.Disconnect()
 	con.sigProcessor.shutDown()
+	select {
+		case con.shutdown <- true:
+		default:
+	}
+}
+
+func (con *consumer) GetShutdownIndicator() chan bool {
+	return con.shutdown
 }
